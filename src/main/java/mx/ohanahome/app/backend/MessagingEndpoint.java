@@ -14,11 +14,12 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiNamespace;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Named;
 
-import static mx.ohanahome.app.backend.OfyService.ofy;
+
 
 /**
  * An endpoint to send messages to devices registered with the backend
@@ -61,7 +62,8 @@ public class MessagingEndpoint {
         }
         Sender sender = new Sender(API_KEY);
         Message msg = new Message.Builder().addData("message", message).build();
-        List<RegistrationRecord> records = ofy().load().type(RegistrationRecord.class).limit(10).list();
+        List<RegistrationRecord> records=new ArrayList<>();// = ofy().load().type(RegistrationRecord.class).limit(10).list();
+        //here load into list the RegistrationRecord
         for(RegistrationRecord record : records) {
             Result result = sender.send(msg, record.getRegId(), 5);
             if (result.getMessageId() != null) {
@@ -71,14 +73,14 @@ public class MessagingEndpoint {
                     // if the regId changed, we have to update the datastore
                     log.info("Registration Id changed for " + record.getRegId() + " updating to " + canonicalRegId);
                     record.setRegId(canonicalRegId);
-                    ofy().save().entity(record).now();
+                    //Here save object record
                 }
             } else {
                 String error = result.getErrorCodeName();
                 if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
                     log.warning("Registration Id " + record.getRegId() + " no longer registered with GCM, removing from datastore");
                     // if the device is no longer registered with Gcm, remove it from the datastore
-                    ofy().delete().entity(record).now();
+                    //Here delete object record
                 }
                 else {
                     log.warning("Error when sending message : " + error);

@@ -11,11 +11,12 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Named;
 
-import static mx.ohanahome.app.backend.OfyService.ofy;
+
 
 /**
  * A registration endpoint class we are exposing for a device's GCM registration id on the backend
@@ -53,7 +54,7 @@ public class RegistrationEndpoint {
         }
         RegistrationRecord record = new RegistrationRecord();
         record.setRegId(regId);
-        ofy().save().entity(record).now();
+        //todo save entity record
     }
 
     /**
@@ -68,7 +69,7 @@ public class RegistrationEndpoint {
             log.info("Device " + regId + " not registered, skipping unregister");
             return;
         }
-        ofy().delete().entity(record).now();
+        //todo delete entity record
     }
 
     /**
@@ -79,12 +80,12 @@ public class RegistrationEndpoint {
      */
     @ApiMethod(name = "listDevices")
     public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count) {
-        List<RegistrationRecord> records = ofy().load().type(RegistrationRecord.class).limit(count).list();
+        List<RegistrationRecord> records = new ArrayList<>();//todo ofy().load().type(RegistrationRecord.class).limit(count).list();
         return CollectionResponse.<RegistrationRecord>builder().setItems(records).build();
     }
 
     private RegistrationRecord findRecord(String regId) {
-        return ofy().load().type(RegistrationRecord.class).filter("regId", regId).first().now();
+        return new RegistrationRecord();//todo find record
     }
 
 }
