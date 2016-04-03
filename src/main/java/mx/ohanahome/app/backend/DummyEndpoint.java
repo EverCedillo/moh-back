@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.inject.Named;
 
 import mx.ohanahome.app.backend.model.Dummy;
+import mx.ohanahome.app.backend.util.DbConection;
 
 /**
  * WARNING: This generated code is intended as a sample or starting point for using a
@@ -38,12 +39,6 @@ public class DummyEndpoint {
 
     private static final int DEFAULT_LIST_LIMIT = 20;
 
-    static {
-        // Typically you would register this inside an OfyServive wrapper. See: https://code.google.com/p/objectify-appengine/wiki/BestPractices
-        ObjectifyService.register(Dummy.class);
-    }
-
-
 
     @ApiMethod(name = "getDummy")
     public Dummy getDummy(@Named("id")long id){
@@ -51,30 +46,17 @@ public class DummyEndpoint {
 
         String data="none";
 
-        Connection connection=null;
         try {
-            Class.forName("com.mysql.jdbc.GoogleDriver");
-            connection = DriverManager.getConnection(
-                    "jdbc:google:mysql://moh-333:test/test_gae",
-                    "gae",
-                    "gae_psw"
-            );
-
-            String query = "SELECT * FROM T01_TEST WHERE id =" +id;
-            ResultSet set=connection.createStatement().executeQuery(query);
-            String insert = "INSERT INTO T01_TEST VALUES(null,'"+id + " holi')";
-            connection.createStatement().executeUpdate(insert);
-            set.next();
-            data+=" "+set.getString("name" );
-        } catch (SQLException e) {
+            if(DbConection.startConnection("test_gae")){
+                String[] columns ={"name"};
+                ResultSet set=DbConection.select("T01_TEST", columns, "id=" + id);
+                set.next();
+                data+=set.getString("name");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             data = e.toString();
         }
-        catch (ClassNotFoundException e){
-            e.printStackTrace();
-            data = e.toString();
-        }
-
         return new Dummy(data);
     }
 }
