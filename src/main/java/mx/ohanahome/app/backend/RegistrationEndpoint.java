@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Named;
 
+import mx.ohanahome.app.backend.model.RegistrationRecord;
 
 
 /**

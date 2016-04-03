@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend;
+package mx.ohanahome.app.backend.model;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
