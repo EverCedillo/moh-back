@@ -44,9 +44,7 @@ public class Home {
     String url;
     String telephone;
     long creator_id;
-    String creation_date;
     String property_type;
-    String modification_date;
     String street;
     String neighborhood;
     String interior_number;
@@ -55,6 +53,10 @@ public class Home {
     String deleg_municip;
     double lenght;
     double latitude;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date creation_date;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date modification_date;
 
     public Home() {
     }
