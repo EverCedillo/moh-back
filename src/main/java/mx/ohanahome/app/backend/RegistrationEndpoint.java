@@ -15,8 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import mx.ohanahome.app.backend.model.RegistrationRecord;
+import mx.ohanahome.app.backend.util.DbConnection;
 
 
 /**
@@ -49,13 +52,26 @@ public class RegistrationEndpoint {
      */
     @ApiMethod(name = "register")
     public void registerDevice(@Named("regId") String regId) {
-        if(findRecord(regId) != null) {
+        DbConnection connection = new DbConnection();
+        EntityManager manager = connection.getEntityManagerFactory("test_gae").createEntityManager();
+
+        TypedQuery<RegistrationRecord> query = manager.createQuery("select t from RegistrationRecord t where regId='" + regId + "'", RegistrationRecord.class);
+
+        List<RegistrationRecord> records = query.getResultList();
+        RegistrationRecord record = records.isEmpty()?null:records.get(0);
+        //RegistrationRecord record = manager.(RegistrationRecord.class,regId);
+        if(record != null) {
             log.info("Device " + regId + " already registered, skipping register");
             return;
         }
-        RegistrationRecord record = new RegistrationRecord();
+        record = new RegistrationRecord();
         record.setRegId(regId);
         //todo save entity record
+
+        manager.getTransaction().begin();
+        manager.persist(record);
+        manager.getTransaction().commit();
+        manager.close();
     }
 
     /**
@@ -65,12 +81,22 @@ public class RegistrationEndpoint {
      */
     @ApiMethod(name = "unregister")
     public void unregisterDevice(@Named("regId") String regId) {
-        RegistrationRecord record = findRecord(regId);
+        DbConnection connection = new DbConnection();
+        EntityManager manager = connection.getEntityManagerFactory("test_gae").createEntityManager();
+
+        TypedQuery<RegistrationRecord> query = manager.createQuery("select t from RegistrationRecord t where regId='"+regId+"'",RegistrationRecord.class);
+
+        //RegistrationRecord record = query.getResultList().get(0); //manager.find(RegistrationRecord.class,regId);
+        List<RegistrationRecord> records = query.getResultList();
+        RegistrationRecord record = records.isEmpty()?null:records.get(0);
         if(record == null) {
             log.info("Device " + regId + " not registered, skipping unregister");
+            manager.close();
             return;
         }
         //todo delete entity record
+        manager.remove(record);
+        manager.close();
     }
 
     /**
@@ -81,12 +107,15 @@ public class RegistrationEndpoint {
      */
     @ApiMethod(name = "listDevices")
     public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count) {
-        List<RegistrationRecord> records = new ArrayList<>();//todo ofy().load().type(RegistrationRecord.class).limit(count).list();
+        DbConnection connection = new DbConnection();
+        EntityManager manager = connection.getEntityManagerFactory("test_gae").createEntityManager();
+
+        TypedQuery<RegistrationRecord> query = manager.createQuery("select t FROM RegistrationRecord t",RegistrationRecord.class);
+
+        List<RegistrationRecord> records = query.getResultList(); //new ArrayList<>();//todo ofy().load().type(RegistrationRecord.class).limit(count).list();
+        manager.close();
         return CollectionResponse.<RegistrationRecord>builder().setItems(records).build();
     }
 
-    private RegistrationRecord findRecord(String regId) {
-        return new RegistrationRecord();//todo find record
-    }
 
 }

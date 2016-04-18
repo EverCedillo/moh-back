@@ -7,7 +7,9 @@
             <param-name>services</param-name>
             <param-value>mx.ohanahome.app.backend.RegistrationEndpoint,
                 mx.ohanahome.app.backend.MessagingEndpoint,
-                mx.ohanahome.app.backend.DummyEndpoint</param-value>
+                mx.ohanahome.app.backend.DummyEndpoint,
+                mx.ohanahome.app.backend.Dummy2Endpoint, mx.ohanahome.app.backend.UserEndpoint,
+                mx.ohanahome.app.backend.Dummy3Endpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

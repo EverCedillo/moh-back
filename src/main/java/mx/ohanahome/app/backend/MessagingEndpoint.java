@@ -18,8 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import mx.ohanahome.app.backend.model.RegistrationRecord;
+import mx.ohanahome.app.backend.util.DbConnection;
 
 
 /**
@@ -62,8 +65,13 @@ public class MessagingEndpoint {
             message = message.substring(0, 1000) + "[...]";
         }
         Sender sender = new Sender(API_KEY);
+        DbConnection connection = new DbConnection();
         Message msg = new Message.Builder().addData("message", message).build();
-        List<RegistrationRecord> records=new ArrayList<>();// = ofy().load().type(RegistrationRecord.class).limit(10).list();
+        EntityManager entityManager= connection.getEntityManagerFactory("test_gae").createEntityManager();
+        TypedQuery<RegistrationRecord> query = entityManager.createQuery("select t FROM RegistrationRecord t",RegistrationRecord.class);
+
+        List<RegistrationRecord> records=query.getResultList();
+
         //here load into list the RegistrationRecord
         for(RegistrationRecord record : records) {
             Result result = sender.send(msg, record.getRegId(), 5);
@@ -88,5 +96,6 @@ public class MessagingEndpoint {
                 }
             }
         }
+        entityManager.close();
     }
 }

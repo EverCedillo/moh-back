@@ -1,20 +1,20 @@
 package mx.ohanahome.app.backend.model;
 
-
-
-
-import com.google.api.server.spi.config.AnnotationBoolean;
-import com.google.api.server.spi.config.ApiResourceProperty;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-
-@Table(name = "T01_TEST")
+/**
+ * Created by ever on 17/04/16.
+ */
+@Table(name = "T_TEST")
 @Entity
-public class Dummy {
+public class Dummy3 {
 
     @GeneratedValue(generator = "increment")
     @Id
@@ -22,15 +22,14 @@ public class Dummy {
 
     String name;
 
-    public Dummy(long id, String name) {
-        this.id = id;
-        this.name = name;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date date;
+
+    public Dummy3() {
     }
 
-    public Dummy(){}
-
-    public Dummy(String name) {
-        this.name = name;
+    public Dummy3(Date date) {
+        this.date = date;
     }
 
     public long getId() {
@@ -39,6 +38,14 @@ public class Dummy {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getName() {

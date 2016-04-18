@@ -1,19 +1,33 @@
 package mx.ohanahome.app.backend.model;
 
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
+;import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-/** The Objectify object model for device registrations we are persisting */
+@Table(name = "T_REG_RECORD")
 @Entity
 public class RegistrationRecord {
 
+    @GeneratedValue(generator = "increment")
     @Id
-    Long id;
+    long id;
 
-    @Index
-    private String regId;
-    // you can add more fields...
+
+    String regId;
+
+    public RegistrationRecord(long id, String regId) {
+        this.id = id;
+        this.regId = regId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public RegistrationRecord() {}
 

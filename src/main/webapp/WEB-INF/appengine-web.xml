@@ -6,6 +6,7 @@
 
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+        <property name="gcm.api.key" value="AIzaSyDU3JZLEBuNzEGGMIZInPhB-wfSMN6cXXM"/>
 
          <!--
             TODO: Before you run your application, you need a Google Cloud Messaging API key.
