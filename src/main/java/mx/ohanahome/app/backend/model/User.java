@@ -48,9 +48,9 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name="UserRol",
+            name="UserRole",
             joinColumns=@JoinColumn(name="id_user", referencedColumnName="id_user"),
-            inverseJoinColumns=@JoinColumn(name="id_user_rol", referencedColumnName="id_user_rol"))
+            inverseJoinColumns=@JoinColumn(name="id_user_role", referencedColumnName="id_user_role"))
     private List<Role> roles;
 
 
