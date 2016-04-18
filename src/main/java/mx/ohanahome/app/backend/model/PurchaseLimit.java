@@ -28,8 +28,12 @@ public class PurchaseLimit {
     String start_limit_date;
     String end_limit_date;
     double actual_amount;
-    String notification;
-    String creation_date;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date modification_date;
+    Date notification;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date modification_date;
+    Date creation_date;
     String period_type;
 
     public void setId_purchase_limit(long id_purchase_limit) {
@@ -56,11 +60,11 @@ public class PurchaseLimit {
         this.actual_amount = actual_amount;
     }
 
-    public void setNotification(String notification) {
+    public void setNotification(Date notification) {
         this.notification = notification;
     }
 
-    public void setCreation_date(String creation_date) {
+    public void setCreation_date(Date creation_date) {
         this.creation_date = creation_date;
     }
 
