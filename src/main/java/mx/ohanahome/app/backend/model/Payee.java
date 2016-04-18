@@ -22,7 +22,7 @@ public class Payee {
     @Column(name="id_payee")
     private long id_payee;
 
-    @ManyToMany(mappedBy="projects")
+    @ManyToMany(mappedBy="payees")
     private List<User> users;
 
     long id_payee_received;
