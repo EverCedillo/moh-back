@@ -4,13 +4,12 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 
-import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
-import mx.ohanahome.app.backend.model.Dummy3;
+import mx.ohanahome.app.backend.entity.Dummy3;
 import mx.ohanahome.app.backend.util.DbConnection;
 
 /**

@@ -1,0 +1,442 @@
+{
+ "kind": "discovery#rpcDescription",
+ "etag": "\"H01Z-1ikbwOw463Un2bFZHenx1g/IIcIT1pZoscSgComGuulim2keng\"",
+ "discoveryVersion": "v1",
+ "id": "userApi:v1",
+ "name": "userApi",
+ "version": "v1",
+ "description": "This is an API",
+ "ownerDomain": "model.backend.app.ohanahome.mx",
+ "ownerName": "model.backend.app.ohanahome.mx",
+ "icons": {
+  "x16": "http://www.google.com/images/icons/product/search-16.gif",
+  "x32": "http://www.google.com/images/icons/product/search-32.gif"
+ },
+ "protocol": "rpc",
+ "rootUrl": "https://moh-333.appspot.com/_ah/api/",
+ "rpcUrl": "https://moh-333.appspot.com/_ah/api/rpc",
+ "rpcPath": "/_ah/api/rpc",
+ "parameters": {
+  "alt": {
+   "type": "string",
+   "description": "Data format for the response.",
+   "default": "json",
+   "enum": [
+    "json"
+   ],
+   "enumDescriptions": [
+    "Responses with Content-Type of application/json"
+   ],
+   "location": "query"
+  },
+  "fields": {
+   "type": "string",
+   "description": "Selector specifying which fields to include in a partial response.",
+   "location": "query"
+  },
+  "key": {
+   "type": "string",
+   "description": "API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.",
+   "location": "query"
+  },
+  "oauth_token": {
+   "type": "string",
+   "description": "OAuth 2.0 token for the current user.",
+   "location": "query"
+  },
+  "prettyPrint": {
+   "type": "boolean",
+   "description": "Returns response with indentations and line breaks.",
+   "default": "true",
+   "location": "query"
+  },
+  "quotaUser": {
+   "type": "string",
+   "description": "Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. Overrides userIp if both are provided.",
+   "location": "query"
+  },
+  "userIp": {
+   "type": "string",
+   "description": "IP address of the site where the request originates. Use this if you want to enforce per-user limits.",
+   "location": "query"
+  }
+ },
+ "auth": {
+  "oauth2": {
+   "scopes": {
+    "https://www.googleapis.com/auth/userinfo.email": {
+     "description": "View your email address"
+    }
+   }
+  }
+ },
+ "schemas": {
+  "Home": {
+   "id": "Home",
+   "type": "object",
+   "properties": {
+    "aditional_informat": {
+     "type": "string"
+    },
+    "creation_date": {
+     "type": "string"
+    },
+    "creator_id": {
+     "type": "string",
+     "format": "int64"
+    },
+    "deleg_municip": {
+     "type": "string"
+    },
+    "exterior_number": {
+     "type": "string"
+    },
+    "home_name": {
+     "type": "string"
+    },
+    "id_home": {
+     "type": "string",
+     "format": "int64"
+    },
+    "interior_number": {
+     "type": "string"
+    },
+    "latitude": {
+     "type": "number",
+     "format": "double"
+    },
+    "lenght": {
+     "type": "number",
+     "format": "double"
+    },
+    "modification_date": {
+     "type": "string"
+    },
+    "neighborhood": {
+     "type": "string"
+    },
+    "postal_code": {
+     "type": "integer",
+     "format": "int32"
+    },
+    "property_type": {
+     "type": "string"
+    },
+    "street": {
+     "type": "string"
+    },
+    "telephone": {
+     "type": "string"
+    },
+    "url": {
+     "type": "string"
+    }
+   }
+  },
+  "Identify": {
+   "id": "Identify",
+   "type": "object",
+   "properties": {
+    "adapter": {
+     "type": "string"
+    },
+    "creation_date": {
+     "type": "string"
+    },
+    "email": {
+     "type": "string"
+    },
+    "id_adapter": {
+     "type": "string"
+    },
+    "id_identify": {
+     "type": "string",
+     "format": "int64"
+    },
+    "modification_date": {
+     "type": "string"
+    }
+   }
+  },
+  "Illness": {
+   "id": "Illness",
+   "type": "object",
+   "properties": {
+    "id_illness": {
+     "type": "string",
+     "format": "int64"
+    },
+    "illness_name": {
+     "type": "string"
+    }
+   }
+  },
+  "Intolerance": {
+   "id": "Intolerance",
+   "type": "object",
+   "properties": {
+    "id_intolerance": {
+     "type": "string",
+     "format": "int64"
+    },
+    "intolerance_name": {
+     "type": "string"
+    }
+   }
+  },
+  "Payee": {
+   "id": "Payee",
+   "type": "object",
+   "properties": {
+    "creation_date": {
+     "type": "string"
+    },
+    "end_payee_date": {
+     "type": "string"
+    },
+    "id_payee": {
+     "type": "string",
+     "format": "int64"
+    },
+    "id_payee_provided": {
+     "type": "string",
+     "format": "int64"
+    },
+    "id_payee_received": {
+     "type": "string",
+     "format": "int64"
+    },
+    "modification_date": {
+     "type": "string"
+    },
+    "start_payee_date": {
+     "type": "string"
+    }
+   }
+  },
+  "Permission": {
+   "id": "Permission",
+   "type": "object",
+   "properties": {
+    "id_permission": {
+     "type": "string",
+     "format": "int64"
+    },
+    "permission_name": {
+     "type": "string"
+    }
+   }
+  },
+  "PurchaseLimit": {
+   "id": "PurchaseLimit",
+   "type": "object",
+   "properties": {
+    "actual_amount": {
+     "type": "number",
+     "format": "double"
+    },
+    "creation_date": {
+     "type": "string"
+    },
+    "end_limit_date": {
+     "type": "string"
+    },
+    "id_purchase_limit": {
+     "type": "string",
+     "format": "int64"
+    },
+    "id_user": {
+     "type": "string",
+     "format": "int64"
+    },
+    "notification": {
+     "type": "string"
+    },
+    "period_type": {
+     "type": "string"
+    },
+    "start_amount": {
+     "type": "number",
+     "format": "double"
+    },
+    "start_limit_date": {
+     "type": "string"
+    }
+   }
+  },
+  "Role": {
+   "id": "Role",
+   "type": "object",
+   "properties": {
+    "id_role": {
+     "type": "string",
+     "format": "int64"
+    },
+    "permissions": {
+     "type": "array",
+     "items": {
+      "$ref": "Permission"
+     }
+    },
+    "role_name": {
+     "type": "string"
+    },
+    "users": {
+     "type": "array",
+     "items": {
+      "$ref": "User"
+     }
+    }
+   }
+  },
+  "User": {
+   "id": "User",
+   "type": "object",
+   "properties": {
+    "birthday": {
+     "type": "string"
+    },
+    "creation_date": {
+     "type": "string"
+    },
+    "email": {
+     "type": "string"
+    },
+    "gender": {
+     "type": "string"
+    },
+    "height": {
+     "type": "integer",
+     "format": "int32"
+    },
+    "homes": {
+     "type": "array",
+     "items": {
+      "$ref": "Home"
+     }
+    },
+    "id_user": {
+     "type": "string",
+     "format": "int64"
+    },
+    "identify": {
+     "$ref": "Identify"
+    },
+    "illnesses": {
+     "type": "array",
+     "items": {
+      "$ref": "Illness"
+     }
+    },
+    "intolerances": {
+     "type": "array",
+     "items": {
+      "$ref": "Intolerance"
+     }
+    },
+    "last_name": {
+     "type": "string"
+    },
+    "mobile_phone": {
+     "type": "string"
+    },
+    "modification_date": {
+     "type": "string"
+    },
+    "pattern": {
+     "type": "string"
+    },
+    "payees": {
+     "type": "array",
+     "items": {
+      "$ref": "Payee"
+     }
+    },
+    "picture": {
+     "type": "string"
+    },
+    "pin": {
+     "type": "string"
+    },
+    "purchases": {
+     "type": "array",
+     "items": {
+      "$ref": "PurchaseLimit"
+     }
+    },
+    "roles": {
+     "type": "array",
+     "items": {
+      "$ref": "Role"
+     }
+    },
+    "user_name": {
+     "type": "string"
+    },
+    "weight": {
+     "type": "integer",
+     "format": "int32"
+    }
+   }
+  }
+ },
+ "methods": {
+  "userApi.getUser": {
+   "id": "userApi.getUser",
+   "allowGet": true,
+   "parameters": {
+    "id": {
+     "type": "string",
+     "required": true,
+     "format": "int64"
+    }
+   },
+   "parameterOrder": [
+    "id"
+   ],
+   "returns": {
+    "$ref": "User"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "userApi.insertUser": {
+   "id": "userApi.insertUser",
+   "parameters": {
+    "adater": {
+     "type": "string",
+     "required": true
+    },
+    "creationDate": {
+     "type": "string",
+     "required": true
+    },
+    "email_": {
+     "type": "string",
+     "required": true
+    },
+    "idAdapter": {
+     "type": "string",
+     "required": true
+    },
+    "resource": {
+     "$ref": "User"
+    }
+   },
+   "parameterOrder": [
+    "resource",
+    "idAdapter",
+    "adater",
+    "email_",
+    "creationDate"
+   ],
+   "returns": {
+    "$ref": "User"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  }
+ }
+}

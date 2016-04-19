@@ -6,15 +6,11 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.appengine.api.oauth.OAuthRequestException;
-import com.google.appengine.api.users.User;
-import com.google.appengine.repackaged.com.google.api.client.util.Base64;
-
-import java.util.logging.Logger;
 
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
-import mx.ohanahome.app.backend.model.Dummy;
+import mx.ohanahome.app.backend.entity.Dummy;
 import mx.ohanahome.app.backend.util.DbConnection;
 
 

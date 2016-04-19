@@ -1,0 +1,35 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+    version="2.0">
+
+
+    <persistence-unit name="mx.ohanahome.app.backend">
+        <class>mx.ohanahome.app.backend.model.Dummy</class>
+        <class>mx.ohanahome.app.backend.model.RegistrationRecord</class>
+        <class>mx.ohanahome.app.backend.model.Dummy2</class>
+        <class>mx.ohanahome.app.backend.model.Home</class>
+        <class>mx.ohanahome.app.backend.model.HomeStore</class>
+        <class>mx.ohanahome.app.backend.model.Identify</class>
+        <class>mx.ohanahome.app.backend.model.Illness</class>
+        <class>mx.ohanahome.app.backend.model.Intolerance</class>
+        <class>mx.ohanahome.app.backend.model.Payee</class>
+        <class>mx.ohanahome.app.backend.model.Permission</class>
+        <class>mx.ohanahome.app.backend.model.PurchaseLimit</class>
+        <class>mx.ohanahome.app.backend.model.Role</class>
+        <class>mx.ohanahome.app.backend.model.Scales</class>
+        <class>mx.ohanahome.app.backend.model.RolePermission</class>
+        <class>mx.ohanahome.app.backend.model.Store</class>
+        <class>mx.ohanahome.app.backend.model.User</class>
+        <class>mx.ohanahome.app.backend.model.UserHome</class>
+        <class>mx.ohanahome.app.backend.model.UserIllness</class>
+        <class>mx.ohanahome.app.backend.model.UserIntolerance</class>
+        <class>mx.ohanahome.app.backend.model.UserRole</class>
+        <class>mx.ohanahome.app.backend.model.Dummy3</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.GoogleDriver"/>
+        </properties>
+
+    </persistence-unit>
+</persistence>
