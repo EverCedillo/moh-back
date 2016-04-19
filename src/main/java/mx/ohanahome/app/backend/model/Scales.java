@@ -20,7 +20,7 @@ import javax.persistence.TemporalType;
 public class Scales {
     @GeneratedValue(generator = "increment")
     @Id
-    private long id_scale;
+    private long id_scales;
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="id_home")
@@ -29,20 +29,20 @@ public class Scales {
     long id_home;
     String aditional_information;
     String mac_address;
-    String scale_name;
+    String scales_name;
 
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
 
-    public Scales ( String mac_address, String scale_name){
+    public Scales ( String mac_address, String scales_name){
         this.mac_address = mac_address;
-        this.scale_name = scale_name;
+        this.scales_name = scales_name;
     }
 
-    public void setId_scale(long id_scale) {
-        this.id_scale = id_scale;
+    public void setId_scales(long id_scales) {
+        this.id_scales = id_scales;
     }
 
     public void setId_home(long id_home) {
@@ -57,16 +57,16 @@ public class Scales {
         this.mac_address = mac_address;
     }
 
-    public void setScale_name(String scale_name) {
-        this.scale_name = scale_name;
+    public void setScale_name(String scales_name) {
+        this.scales_name = scales_name;
     }
 
     public void setCreation_date(Date creation_date) {
         this.creation_date = creation_date;
     }
 
-    public long getId_scale() {
-        return id_scale;
+    public long getId_scales() {
+        return id_scales;
     }
 
     public long getId_home() {
@@ -81,8 +81,8 @@ public class Scales {
         return mac_address;
     }
 
-    public String getScale_name() {
-        return scale_name;
+    public String getScales_name() {
+        return scales_name;
     }
 
     public Date getCreation_date() {
