@@ -1,9 +1,13 @@
 package mx.ohanahome.app.backend.model;
 
+import java.sql.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Created by brenda on 4/3/16.
@@ -16,9 +20,13 @@ public class UserRole {
     long id_user_role;
     long id_role;
     long id_user;
-    String role_start_date;
-    String modification_date;
-    String role_end_date;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    Date role_start_date;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date modification_date;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date role_end_date;
 
     public long getId_user_role() {
         return id_user_role;
@@ -44,27 +52,27 @@ public class UserRole {
         this.id_user = id_user;
     }
 
-    public String getRole_start_date() {
+    public Date getRole_start_date() {
         return role_start_date;
     }
 
-    public void setRole_start_date(String role_start_date) {
+    public void setRole_start_date(Date role_start_date) {
         this.role_start_date = role_start_date;
     }
 
-    public String getModification_date() {
+    public Date getModification_date() {
         return modification_date;
     }
 
-    public void setModification_date(String modification_date) {
+    public void setModification_date(Date modification_date) {
         this.modification_date = modification_date;
     }
 
-    public String getRole_end_date() {
+    public Date getRole_end_date() {
         return role_end_date;
     }
 
-    public void setRole_end_date(String role_end_date) {
+    public void setRole_end_date(Date role_end_date) {
         this.role_end_date = role_end_date;
     }
 

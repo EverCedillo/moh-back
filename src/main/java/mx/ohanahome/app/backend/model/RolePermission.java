@@ -16,6 +16,7 @@ public class RolePermission {
     long id_permission ;
     long id_role;
 
+
     public long getId_role_permission() {
         return id_role_permission;
     }

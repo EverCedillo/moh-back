@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+
 /**
  * Created by brenda on 4/3/16.
  */
@@ -24,6 +25,10 @@ public class Illness {
     private List<User> users;
 
     String illness_name;
+
+    public Illness(String illness_name){
+        this.illness_name = illness_name;
+    }
 
 
     public void setId_illness(long id_illness) {
@@ -43,6 +48,8 @@ public class Illness {
         return illness_name;
     }
 
-    public Illness(){}
+    public Illness(){
+
+    }
 
 }
