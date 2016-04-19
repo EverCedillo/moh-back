@@ -16,9 +16,12 @@ import javax.persistence.TemporalType;
 @Entity
 public class UserIllness {
     @Id
-    long id_user_illness;
-    long id_user;
-    long id_illness;
+    private long id_user_illness;
+    @Id
+    private long id_user;
+    @Id
+    private long id_illness;
+
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)

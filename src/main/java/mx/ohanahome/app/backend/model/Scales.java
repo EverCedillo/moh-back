@@ -25,8 +25,8 @@ public class Scales {
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="id_home")
     private Home home_scales;
-
-    long id_home;
+    @Id
+    private long id_home;
     String aditional_information;
     String mac_address;
     String scales_name;

@@ -15,9 +15,11 @@ import javax.persistence.TemporalType;
 @Entity
 public class UserHome {
     @Id
-    long id_user_home;
-    long id_user;
-    long id_home;
+    private long id_user_home;
+    @Id
+    private long id_user;
+    @Id
+    private long id_home;
 
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;

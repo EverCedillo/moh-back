@@ -17,9 +17,11 @@ import javax.persistence.TemporalType;
 public class UserRole {
 
     @Id
-    long id_user_role;
-    long id_role;
-    long id_user;
+    private long id_user_role;
+    @Id
+    private long id_role;
+    @Id
+    private long id_user;
 
     @Temporal(TemporalType.TIMESTAMP)
     Date role_start_date;

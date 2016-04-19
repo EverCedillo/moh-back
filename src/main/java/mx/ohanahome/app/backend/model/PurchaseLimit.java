@@ -27,7 +27,8 @@ public class PurchaseLimit {
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="id_purchase_limit")
     private User purchase_limit;
-    long id_user;
+    @Id
+    private long id_user;
     double start_amount;
     double actual_amount;
     String notification;

@@ -16,9 +16,12 @@ import javax.persistence.TemporalType;
 @Entity
 public class UserIntolerance {
     @Id
-    long id_user_intolerance;
-    long id_intolerance;
-    long id_user;
+    private long id_user_intolerance;
+    @Id
+    private long id_intolerance;
+    @Id
+    private long id_user;
+
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
