@@ -12,9 +12,12 @@ import javax.persistence.Table;
 public class RolePermission {
 
     @Id
-    long id_role_permission;
-    long id_permission ;
-    long id_role;
+    private long id_role_permission;
+    @Id
+    private long id_permission ;
+    @Id
+    private long id_role;
+
 
     public long getId_role_permission() {
         return id_role_permission;

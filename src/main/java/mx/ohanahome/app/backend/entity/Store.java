@@ -1,5 +1,6 @@
 package mx.ohanahome.app.backend.entity;
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -8,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 
 /**
  * Created by brenda on 4/3/16.
@@ -25,8 +29,16 @@ public class Store {
 
     String store_name;
     String address;
-    String aditional_informat;
-    String modification_date;
+    String aditional_information;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    Date modification_date;
+
+    public Store (String store_name, String address){
+        this.store_name = store_name;
+        this.address = address;
+    }
+
 
     public void setId_store(long id_store) {
         this.id_store = id_store;
@@ -40,11 +52,11 @@ public class Store {
         this.address = address;
     }
 
-    public void setAditional_informat(String aditional_informat) {
-        this.aditional_informat = aditional_informat;
+    public void setAditional_information(String aditional_information) {
+        this.aditional_information = aditional_information;
     }
 
-    public void setModification_date(String modification_date) {
+    public void setModification_date(Date modification_date) {
         this.modification_date = modification_date;
     }
 
@@ -60,11 +72,11 @@ public class Store {
         return address;
     }
 
-    public String getAditional_informat() {
-        return aditional_informat;
+    public String getAditional_information() {
+        return aditional_information;
     }
 
-    public String getModification_date() {
+    public Date getModification_date() {
         return modification_date;
     }
 

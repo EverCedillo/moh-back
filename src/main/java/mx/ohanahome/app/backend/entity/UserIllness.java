@@ -1,9 +1,13 @@
 package mx.ohanahome.app.backend.entity;
 
+import java.sql.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Created by brenda on 4/3/16.
@@ -12,25 +16,30 @@ import javax.persistence.Table;
 @Entity
 public class UserIllness {
     @Id
-    long id_user_illness;
-    long id_user;
-    long id_illness;
-    String creation_date;
-    String modification_date;
+    private long id_user_illness;
+    @Id
+    private long id_user;
+    @Id
+    private long id_illness;
 
-    public void setCreation_date(String creation_date) {
+    @Temporal(TemporalType.TIMESTAMP)
+    Date creation_date;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date modification_date;
+
+    public void setCreation_date(Date creation_date) {
         this.creation_date = creation_date;
     }
 
-    public void setModification_date(String modification_date) {
+    public void setModification_date(Date modification_date) {
         this.modification_date = modification_date;
     }
 
-    public String getCreation_date() {
+    public Date getCreation_date() {
         return creation_date;
     }
 
-    public String getModification_date() {
+    public Date getModification_date() {
         return modification_date;
     }
 
