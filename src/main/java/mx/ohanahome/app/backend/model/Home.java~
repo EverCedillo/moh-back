@@ -44,6 +44,7 @@ public class Home {
     String url;
     String telephone;
     long creator_id;
+    String property_type;
     String street;
     String neighborhood;
     String interior_number;
@@ -52,32 +53,12 @@ public class Home {
     String deleg_municip;
     double lenght;
     double latitude;
-    String aditional_informat;
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
 
-    public Home(String home_name, String url, String telephone, long creator_id, 
-                String street, String neighborhood,String exterior_number, int postal_code, 
-                String deleg_municip, double lenght, double latitude ) {
-    home_name            
-	url                  
-	telephone            
-	creator_id           
-	creation_date        
-	modification_date    
-	street               
-	neighborhood         
-	interior_number      
-	exterior_number      
-	postal_code          
-	deleg_municip        
-	lenght               
-	latitude
-    
-    
-    
+    public Home() {
     }
 
     public void setId_home(long id_home) {
@@ -104,7 +85,9 @@ public class Home {
         this.creation_date = creation_date;
     }
 
-    
+    public void setProperty_type(String property_type) {
+        this.property_type = property_type;
+    }
 
     public void setModification_date(String modification_date) {
         this.modification_date = modification_date;
@@ -170,6 +153,9 @@ public class Home {
         return creation_date;
     }
 
+    public String getProperty_type() {
+        return property_type;
+    }
 
     public String getModification_date() {
         return modification_date;
@@ -210,6 +196,9 @@ public class Home {
     public String getAditional_informat() {
         return aditional_informat;
     }
+
+    String aditional_informat;
+
 
 }
 
