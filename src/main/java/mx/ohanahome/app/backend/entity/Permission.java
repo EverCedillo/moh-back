@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend.model;
+package mx.ohanahome.app.backend.entity;
 
 import java.util.List;
 
@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Created by brenda on 4/17/16.
@@ -24,6 +26,13 @@ public class Permission {
     private List<Role> roles;
 
     String permission_name;
+
+    public Permission (String permission_name){
+        this.permission_name = permission_name;
+
+    }
+
+
 
     public void setId_permission(long id_permission) {
         this.id_permission = id_permission;

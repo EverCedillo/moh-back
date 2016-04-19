@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend.model;
+package mx.ohanahome.app.backend.entity;
 
 import java.util.Date;
 
@@ -27,12 +27,18 @@ public class Identify {
     String id_adapter;
     String adapter;
     String email;
-    @Column(updatable = false,insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
-    @Column(updatable = false,insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
+
+    public Identify(String id_adapter, String adapter, String email, Date creation_date, Date modification_date) {
+        this.id_adapter = id_adapter;
+        this.adapter = adapter;
+        this.email = email;
+        this.creation_date = creation_date;
+        this.modification_date = modification_date;
+    }
 
     public void setId_identify(long id_identify) {
         this.id_identify = id_identify;
@@ -84,13 +90,10 @@ public class Identify {
         return modification_date;
     }
 
-    public Identify(){}
+    public Identify(){
 
-    public Identify(String id_adapter, String adapter, String email, Date creation_date, Date modification_date) {
-        this.id_adapter = id_adapter;
-        this.adapter = adapter;
-        this.email = email;
-        this.creation_date = creation_date;
-        this.modification_date = modification_date;
+
     }
+
+
 }

@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend.model;
+package mx.ohanahome.app.backend.entity;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
 
 /**
  * Created by brenda on 4/3/16.
@@ -25,6 +26,11 @@ public class Intolerance {
 
 
     String intolerance_name;
+
+    public Intolerance(String intolerance_name){
+        this.intolerance_name = intolerance_name;
+
+    }
 
     public void setId_intolerance(long id_intolerance) {
         this.id_intolerance = id_intolerance;

@@ -1,11 +1,10 @@
-package mx.ohanahome.app.backend.model;
+package mx.ohanahome.app.backend.entity;
 
 
 
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Generated;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,9 +47,9 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name="UserRol",
+            name="UserRole",
             joinColumns=@JoinColumn(name="id_user", referencedColumnName="id_user"),
-            inverseJoinColumns=@JoinColumn(name="id_user_rol", referencedColumnName="id_user_rol"))
+            inverseJoinColumns=@JoinColumn(name="id_user_role", referencedColumnName="id_user_role"))
     private List<Role> roles;
 
 
@@ -91,10 +90,12 @@ public class User {
     int weight;
     String pin;
     String pattern;
+
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
+
 
     public User( String user_name, String last_name, String gender, String picture, String birthday, String email) {
         this.user_name = user_name;
@@ -103,7 +104,6 @@ public class User {
         this.picture = picture;
         this.birthday = birthday;
         this.email=email;
-
     }
 
     public long getId_user() {
@@ -273,6 +273,7 @@ public class User {
     public void setModification_date(Date modification_date) {
         this.modification_date = modification_date;
     }
+
 
     public User(){
 

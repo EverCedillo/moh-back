@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend.model;
+package mx.ohanahome.app.backend.entity;
 
 ;import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

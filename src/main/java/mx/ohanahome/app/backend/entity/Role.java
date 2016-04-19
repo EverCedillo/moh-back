@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend.model;
+package mx.ohanahome.app.backend.entity;
 
 import java.util.List;
 
@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Created by brenda on 4/17/16.
@@ -32,6 +34,10 @@ public class Role {
 
 
     String role_name;
+
+    public Role(String role_name){
+        this.role_name = role_name;
+    }
 
     public long getId_role() {
         return id_role;

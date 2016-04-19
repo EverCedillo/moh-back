@@ -4,8 +4,6 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 
-import org.datanucleus.util.Base64;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -19,8 +17,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 
-import mx.ohanahome.app.backend.model.Dummy;
-import mx.ohanahome.app.backend.model.Dummy2;
+import mx.ohanahome.app.backend.entity.Dummy2;
 import mx.ohanahome.app.backend.util.DbConnection;
 
 /**

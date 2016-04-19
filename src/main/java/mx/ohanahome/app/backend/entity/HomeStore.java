@@ -1,8 +1,12 @@
-package mx.ohanahome.app.backend.model;
+package mx.ohanahome.app.backend.entity;
+
+import java.sql.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Created by brenda on 4/3/16.
@@ -11,9 +15,14 @@ import javax.persistence.Table;
 @Entity
 public class HomeStore {
     @Id
-    long id_home_store;
-    long id_home;
-    long id_store;
+    private long id_home_store;
+    @Id
+    private long id_home;
+    @Id
+    private long id_store;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    Date creation_date;
 
     public void setId_home_store(long id_home_store) {
         this.id_home_store = id_home_store;
@@ -37,6 +46,14 @@ public class HomeStore {
 
     public long getId_store() {
         return id_store;
+    }
+
+    public Date getCreation_date() {
+        return creation_date;
+    }
+
+    public void setCreation_date(Date creation_date) {
+        this.creation_date = creation_date;
     }
 
     public HomeStore(){}

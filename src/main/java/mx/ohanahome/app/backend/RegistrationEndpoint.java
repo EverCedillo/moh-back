@@ -11,14 +11,13 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import mx.ohanahome.app.backend.model.RegistrationRecord;
+import mx.ohanahome.app.backend.entity.RegistrationRecord;
 import mx.ohanahome.app.backend.util.DbConnection;
 
 
