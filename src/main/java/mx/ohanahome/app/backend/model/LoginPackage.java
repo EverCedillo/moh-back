@@ -17,6 +17,13 @@ public class LoginPackage {
         identify = new Identify(id_adapter,adapter,email_,creationDate,modificationDate);
     }
 
+    public LoginPackage(){}
+
+    public LoginPackage(User user, Identify identify) {
+        this.user = user;
+        this.identify = identify;
+    }
+
     public Identify getIdentify() {
         return identify;
     }

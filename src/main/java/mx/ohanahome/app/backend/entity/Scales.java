@@ -25,8 +25,7 @@ public class Scales {
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="id_home")
     private Home home_scales;
-    @Id
-    private long id_home;
+
     String aditional_information;
     String mac_address;
     String scales_name;
@@ -45,9 +44,6 @@ public class Scales {
         this.id_scales = id_scales;
     }
 
-    public void setId_home(long id_home) {
-        this.id_home = id_home;
-    }
 
     public void setAditional_information(String aditional_information) {
         this.aditional_information = aditional_information;
@@ -69,8 +65,16 @@ public class Scales {
         return id_scales;
     }
 
-    public long getId_home() {
-        return id_home;
+    public Home getHome_scales() {
+        return home_scales;
+    }
+
+    public void setHome_scales(Home home_scales) {
+        this.home_scales = home_scales;
+    }
+
+    public void setScales_name(String scales_name) {
+        this.scales_name = scales_name;
     }
 
     public String getAditional_information() {

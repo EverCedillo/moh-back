@@ -16,7 +16,7 @@ public class MOHQuery<T> {
     }
 
     public T select(Class<T> className,String whereArgs){
-        String select = "select t from "+className.getName()+"t where"+whereArgs;
+        String select = "select "+ Constants.UNIVERSAL_ALIAS+" from "+className.getName()+" "+Constants.UNIVERSAL_ALIAS +" where "+whereArgs;
         TypedQuery<T> query=manager.createQuery(select,className);
         List<T> resultList= query.getResultList();
         return resultList.isEmpty()?null:resultList.get(0);

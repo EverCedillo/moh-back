@@ -29,10 +29,8 @@ public class Payee {
     @ManyToMany(mappedBy="payees")
     private List<User> users;
 
-    @Id
-    private long id_payee_received;
-    @Id
-    private long id_payee_provided;
+
+
 
     @Temporal(TemporalType.TIMESTAMP)
     Date start_payee_date;
@@ -42,6 +40,9 @@ public class Payee {
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
+
+    private long id_payee_received;
+    private long id_payee_provided;
 
     public Payee( long id_payee_received,long id_payee_provided) {
         this.id_payee_provided = id_payee_provided;

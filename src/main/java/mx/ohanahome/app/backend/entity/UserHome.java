@@ -16,13 +16,14 @@ import javax.persistence.TemporalType;
 public class UserHome {
     @Id
     private long id_user_home;
-    @Id
-    private long id_user;
-    @Id
-    private long id_home;
+
+
 
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
+
+    private long id_user;
+    private long id_home;
 
     public void setId_user_home(long id_user_home) {
         this.id_user_home = id_user_home;

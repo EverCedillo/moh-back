@@ -13,9 +13,8 @@ public class RolePermission {
 
     @Id
     private long id_role_permission;
-    @Id
+
     private long id_permission ;
-    @Id
     private long id_role;
 
 

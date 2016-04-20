@@ -49,7 +49,7 @@ public class UserEndpoint {
 
         User user=null;
         DbConnection connection = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(DbConnection.USER_DATABASE).createEntityManager();
+        EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
         switch (flag){
             case FIND_BY_ID:
                 long id=loginPackage.getUser().getId_user();
@@ -73,10 +73,10 @@ public class UserEndpoint {
      * @param  loginPackage Package with <code>User</code> and <code>Identify</code> object to be updated.
      * @return The object updated
      */
-    @ApiMethod(name = "updateUser")
+    @ApiMethod(name = "updateUser",path = "me")
     public User updateUser (LoginPackage loginPackage)throws MOHException{
         DbConnection connection = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(DbConnection.USER_DATABASE).createEntityManager();
+        EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
         Status status;
 
         status = validateFields(loginPackage);
@@ -110,7 +110,7 @@ public class UserEndpoint {
     public User insertUser(LoginPackage loginPackage) throws MOHException{
         DbConnection connection = new DbConnection();
 
-        EntityManager manager =connection.getEntityManagerFactory(DbConnection.USER_DATABASE).createEntityManager();
+        EntityManager manager =connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
 
         Status status;
         Identify identify = loginPackage.getIdentify();
@@ -128,11 +128,17 @@ public class UserEndpoint {
 
 
         manager.getTransaction().begin();
-        manager.persist(identify);
-        user.setIdentify(identify);
+
         user.setCreation_date(new java.util.Date());
         user.setModification_date(new java.util.Date());
+        user.setBirthday(new java.util.Date());
         manager.persist(user);
+
+        identify.setCreation_date(new java.util.Date());
+        identify.setModification_date(new java.util.Date());
+        identify.setUser(user);
+        manager.persist(identify);
+
         manager.getTransaction().commit();
         manager.close();
 
@@ -141,9 +147,9 @@ public class UserEndpoint {
 
     private Status verifyIdentity(Identify identify, EntityManager manager){
         MOHQuery<User> query = new MOHQuery<>(manager);
-        String where = Constants.TOH_USER.ID_ADAPTER +"="+ identify.getId_adapter()+" AND "+ Constants.TOH_USER.ADAPTER+"="+identify.getAdapter();
+        String where = Constants.TOH_USER.ID_ADAPTER.name +"="+ identify.getId_adapter()+" AND "+ Constants.TOH_USER.ADAPTER.name+"="+identify.getAdapter();
         User user = query.select(User.class,where);
-        if(user==null) return Status.USER_ALREADY_EXISTS;
+        if(user!=null) return Status.USER_ALREADY_EXISTS;
         else return Status.OK;
     }
 

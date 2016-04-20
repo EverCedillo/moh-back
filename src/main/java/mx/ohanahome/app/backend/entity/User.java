@@ -33,49 +33,48 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name= "UserHome",
-            joinColumns=@JoinColumn(name="id_user", referencedColumnName="id_user"),
-            inverseJoinColumns=@JoinColumn(name="id_home", referencedColumnName="id_home"))
+            name= "TOH_USER_HOME",
+            joinColumns=@JoinColumn(name="id_user"),
+            inverseJoinColumns=@JoinColumn(name="id_home"))
     private List<Home> homes;
 
     @ManyToMany
     @JoinTable(
-            name="Payee",
-            joinColumns=@JoinColumn(name="id_payee_received", referencedColumnName="id_payee_received"),
-            inverseJoinColumns=@JoinColumn(name="id_payee_provided", referencedColumnName="id_payee_provided"))
+            name="TOH_PAYEE",
+            joinColumns=@JoinColumn(name="id_payee_received"),
+            inverseJoinColumns=@JoinColumn(name="id_payee_provided"))
     private List<Payee> payees;
 
     @ManyToMany
     @JoinTable(
-            name="UserRole",
-            joinColumns=@JoinColumn(name="id_user", referencedColumnName="id_user"),
-            inverseJoinColumns=@JoinColumn(name="id_user_role", referencedColumnName="id_user_role"))
+            name="TOH_USER_ROLE",
+            joinColumns=@JoinColumn(name="id_user"),
+            inverseJoinColumns=@JoinColumn(name="id_user_role"))
     private List<Role> roles;
 
 
 
     @ManyToMany
     @JoinTable(
-            name="UserIntolerance",
-            joinColumns=@JoinColumn(name="id_user", referencedColumnName="id_user"),
-            inverseJoinColumns=@JoinColumn(name="id_user_intolerance", referencedColumnName="id_user_intolerance"))
+            name="TOH_USER_INTOLERANCE",
+            joinColumns=@JoinColumn(name="id_user"),
+            inverseJoinColumns=@JoinColumn(name="id_user_intolerance"))
     private List<Intolerance> intolerances;
 
 
     @ManyToMany
     @JoinTable(
-            name="UserIllness",
-            joinColumns=@JoinColumn(name="id_user", referencedColumnName="id_user"),
-            inverseJoinColumns=@JoinColumn(name="id_user_illness", referencedColumnName="id_user_illness"))
+            name="TOH_USER_ILLNESS",
+            joinColumns=@JoinColumn(name="id_user"),
+            inverseJoinColumns=@JoinColumn(name="id_user_illness"))
     private List<Illness> illnesses;
 
 
-    @ManyToMany(mappedBy="purchase_limit")
+    @ManyToMany(mappedBy="user")
     private List<PurchaseLimit> purchases;
 
 
-    @OneToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name="id_identify")
+    @OneToOne(fetch= FetchType.LAZY, mappedBy = "user")
     private Identify identify;
 
 
@@ -84,7 +83,7 @@ public class User {
     String gender;
     String picture;
     String mobile_phone;
-    String birthday;
+    Date birthday;
     String email;
     int height;
     int weight;
@@ -97,7 +96,7 @@ public class User {
     Date modification_date;
 
 
-    public User( String user_name, String last_name, String gender, String picture, String birthday, String email) {
+    public User( String user_name, String last_name, String gender, String picture, Date birthday, String email) {
         this.user_name = user_name;
         this.last_name = last_name;
         this.gender = gender;
@@ -230,11 +229,11 @@ public class User {
         this.mobile_phone = mobile_phone;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 

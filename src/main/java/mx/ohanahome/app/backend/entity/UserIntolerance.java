@@ -17,16 +17,17 @@ import javax.persistence.TemporalType;
 public class UserIntolerance {
     @Id
     private long id_user_intolerance;
-    @Id
-    private long id_intolerance;
-    @Id
-    private long id_user;
+
+
 
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
 
+
+    private long id_intolerance;
+    private long id_user;
 
     public void setCreation_date(Date creation_date) {
         this.creation_date = creation_date;

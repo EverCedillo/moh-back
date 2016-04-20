@@ -16,9 +16,10 @@ import javax.persistence.TemporalType;
 public class HomeStore {
     @Id
     private long id_home_store;
-    @Id
+
+
+
     private long id_home;
-    @Id
     private long id_store;
 
     @Temporal(TemporalType.TIMESTAMP)

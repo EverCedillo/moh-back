@@ -27,10 +27,9 @@ public class PurchaseLimit {
     private long id_purchase_limit;
 
     @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name="id_purchase_limit")
-    private User purchase_limit;
-    @Id
-    private long id_user;
+    @JoinColumn(name="id_user")
+    private User user;
+
     double start_amount;
     double actual_amount;
     String notification;
@@ -58,9 +57,7 @@ public class PurchaseLimit {
         this.id_purchase_limit = id_purchase_limit;
     }
 
-    public void setId_user(long id_user) {
-        this.id_user = id_user;
-    }
+
 
     public void setStart_amount(double start_amount) {
         this.start_amount = start_amount;
@@ -94,8 +91,12 @@ public class PurchaseLimit {
         return id_purchase_limit;
     }
 
-    public long getId_user() {
-        return id_user;
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public double getStart_amount() {

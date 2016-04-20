@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -24,20 +25,24 @@ public class Identify {
     @Column(name = "id_identify")
     private long id_identify;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="id_user")
+    private User user;
+
     String id_adapter;
     String adapter;
     String email;
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
-    Date modification_date;
+    Date modification_time;
 
     public Identify(String id_adapter, String adapter, String email, Date creation_date, Date modification_date) {
         this.id_adapter = id_adapter;
         this.adapter = adapter;
         this.email = email;
         this.creation_date = creation_date;
-        this.modification_date = modification_date;
+        this.modification_time = modification_date;
     }
 
     public Identify updateIdentify(Identify identify) {
@@ -45,7 +50,7 @@ public class Identify {
         this.adapter = identify.adapter;
         this.email = identify.email;
         this.creation_date = identify.creation_date;
-        this.modification_date = identify.modification_date;
+        this.modification_time = identify.modification_time;
         return this;
     }
 
@@ -71,7 +76,7 @@ public class Identify {
     }
 
     public void setModification_date(Date modification_date) {
-        this.modification_date = modification_date;
+        this.modification_time = modification_date;
     }
 
     public long getId_identify() {
@@ -96,7 +101,7 @@ public class Identify {
     }
 
     public Date getModification_date() {
-        return modification_date;
+        return modification_time;
     }
 
     public Identify(){
@@ -104,5 +109,11 @@ public class Identify {
 
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
