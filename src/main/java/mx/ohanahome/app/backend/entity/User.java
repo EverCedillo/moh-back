@@ -106,6 +106,26 @@ public class User {
         this.email=email;
     }
 
+    public User updateValues(User user) {
+
+        this.identify = user.identify;
+        this.user_name = user.user_name;
+        this.last_name = user.last_name;
+        this.gender = user.gender;
+        this.picture = user.picture;
+        this.mobile_phone = user.mobile_phone;
+        this.birthday = user.birthday;
+        this.email = user.email;
+        this.height = user.height;
+        this.weight = user.weight;
+        this.pin = user.pin;
+        this.pattern = user.pattern;
+        this.creation_date = user.creation_date;
+        this.modification_date = user.modification_date;
+
+        return this;
+    }
+
     public long getId_user() {
         return id_user;
     }

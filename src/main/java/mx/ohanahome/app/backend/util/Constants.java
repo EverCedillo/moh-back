@@ -6,7 +6,7 @@ package mx.ohanahome.app.backend.util;
 public class Constants {
 
     public enum TOH_USER{
-        ID("id"),EMAIL("email"),ID_ADAPTER("id_adapter"),ADAPTER("adapter");
+        ID("id"),EMAIL("email"),ID_ADAPTER("id_adapter"),ADAPTER("adapter"),ID_IDENTIFY("id_identify");
 
 
         TOH_USER(String name) {

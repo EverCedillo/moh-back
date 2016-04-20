@@ -40,6 +40,15 @@ public class Identify {
         this.modification_date = modification_date;
     }
 
+    public Identify updateIdentify(Identify identify) {
+        this.id_adapter = identify.id_adapter;
+        this.adapter = identify.adapter;
+        this.email = identify.email;
+        this.creation_date = identify.creation_date;
+        this.modification_date = identify.modification_date;
+        return this;
+    }
+
     public void setId_identify(long id_identify) {
         this.id_identify = id_identify;
     }
