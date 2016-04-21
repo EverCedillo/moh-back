@@ -6,9 +6,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 /**
- * Created by ever on 18/04/16.
+ * Abandoned, in construction, failed, i don't know; todo make fix this or destroy this
  */
 public class MOHQuery<T> {
+
+
     EntityManager manager;
 
     public MOHQuery(EntityManager manager) {
@@ -17,8 +19,8 @@ public class MOHQuery<T> {
 
     public T select(Class<T> className,String whereArgs){
         String select = "select "+ Constants.UNIVERSAL_ALIAS+" from "+className.getName()+" "+Constants.UNIVERSAL_ALIAS +" where "+whereArgs;
-        TypedQuery<T> query=manager.createQuery(select,className);
-        List<T> resultList= query.getResultList();
+
+        List<T> resultList= manager.createQuery(select,className).getResultList();
         return resultList.isEmpty()?null:resultList.get(0);
     }
 }

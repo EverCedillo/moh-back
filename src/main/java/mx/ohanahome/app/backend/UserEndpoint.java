@@ -4,11 +4,16 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 
+import java.beans.Expression;
 import java.sql.Date;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
+import javax.persistence.TypedQuery;
 
 import mx.ohanahome.app.backend.entity.Identify;
 import mx.ohanahome.app.backend.entity.User;
@@ -146,10 +151,25 @@ public class UserEndpoint {
     }
 
     private Status verifyIdentity(Identify identify, EntityManager manager){
-        MOHQuery<User> query = new MOHQuery<>(manager);
-        String where = Constants.TOH_USER.ID_ADAPTER.name +"="+ identify.getId_adapter()+" AND "+ Constants.TOH_USER.ADAPTER.name+"="+identify.getAdapter();
-        User user = query.select(User.class,where);
-        if(user!=null) return Status.USER_ALREADY_EXISTS;
+
+        String q = "select "+ Constants.UNIVERSAL_ALIAS+ " from Identify "+ Constants.UNIVERSAL_ALIAS+ " where "+
+                Constants.TOH_USER.ID_ADAPTER.name +"=?1 AND "+
+                Constants.TOH_USER.ADAPTER.name+"=?2";
+
+
+
+        TypedQuery<Identify> query = manager.createQuery(q,Identify.class);
+
+
+
+        if(query==null||identify==null)
+            return Status.WRONG_USER;
+
+        query.setParameter(1,identify.getId_adapter());
+        query.setParameter(2,identify.getAdapter());
+        List<Identify> ids = query.getResultList();
+        Identify ident = ids.isEmpty()?null:ids.get(0);
+        if(ident!=null) return Status.USER_ALREADY_EXISTS;
         else return Status.OK;
     }
 

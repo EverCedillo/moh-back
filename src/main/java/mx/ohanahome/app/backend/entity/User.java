@@ -38,6 +38,7 @@ public class User {
             inverseJoinColumns=@JoinColumn(name="id_home"))
     private List<Home> homes;
 
+    //Esta relación causa conflicto,
     @ManyToMany
     @JoinTable(
             name="TOH_PAYEE",
