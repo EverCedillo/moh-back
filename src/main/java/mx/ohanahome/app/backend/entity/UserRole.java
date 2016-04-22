@@ -18,10 +18,9 @@ public class UserRole {
 
     @Id
     private long id_user_role;
-    @Id
-    private long id_role;
-    @Id
-    private long id_user;
+
+
+
 
     @Temporal(TemporalType.TIMESTAMP)
     Date role_start_date;
@@ -29,6 +28,9 @@ public class UserRole {
     Date modification_date;
     @Temporal(TemporalType.TIMESTAMP)
     Date role_end_date;
+
+    private long id_role;
+    private long id_user;
 
     public long getId_user_role() {
         return id_user_role;

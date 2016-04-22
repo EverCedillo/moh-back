@@ -27,8 +27,8 @@ public class Home {
     @GeneratedValue(generator = "increment")
     @Id
     @Column(name = "id_home")
-
     private long id_home;
+
     @OneToMany(mappedBy="home_scales")
     private List<Scales> scales;
 
@@ -37,7 +37,7 @@ public class Home {
 
     @ManyToMany
     @JoinTable(
-            name="HomeStore",
+            name="TOH_HOME_STORE",
             joinColumns=@JoinColumn(name="id_home", referencedColumnName="id_home"),
             inverseJoinColumns=@JoinColumn(name="id_store", referencedColumnName="id_store"))
     private List<Store> stores;

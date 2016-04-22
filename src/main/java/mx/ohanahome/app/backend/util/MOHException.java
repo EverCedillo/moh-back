@@ -5,13 +5,25 @@ package mx.ohanahome.app.backend.util;
  */
 public class MOHException extends Exception {
     private String message;
-    public MOHException(String mssg){
+    private int code;
+
+    public static final int STATUS_SERVER_ERROR= 0;
+    public static final int STATUS_NOT_ENOUGH_DATA = 1;
+    public static final int STATUS_OBJECT_NOT_FOUND = 2;
+    public static final int STATUS_OBJECT_NOT_ACCESSIBLE = 3;
+
+    public MOHException(String mssg, int code){
         super(mssg);
         message=mssg;
+        this.code=code;
     }
 
     @Override
     public String getMessage() {
         return message;
+    }
+
+    public int getCode() {
+        return code;
     }
 }

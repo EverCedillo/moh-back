@@ -18,7 +18,7 @@ public class DbConnection {
     public static final String DRIVER = "com.mysql.jdbc.GoogleDriver";
     public static final String PROJECT = "jdbc:google:mysql://moh-333:test/";
 
-    public static final String USER_DATABASE = "USER";
+
     public Connection connection;
 
     public EntityManagerFactory getEntityManagerFactory(String database) {

@@ -17,15 +17,16 @@ import javax.persistence.TemporalType;
 public class UserIllness {
     @Id
     private long id_user_illness;
-    @Id
-    private long id_user;
-    @Id
-    private long id_illness;
+
+
 
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
+
+    private long id_user;
+    private long id_illness;
 
     public void setCreation_date(Date creation_date) {
         this.creation_date = creation_date;
