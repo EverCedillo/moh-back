@@ -84,20 +84,21 @@ public class User {
     String gender;
     String picture;
     String mobile_phone;
-    String birthday;
     String email;
     int height;
     int weight;
     String pin;
     String pattern;
 
+    @Temporal(TemporalType.DATE)
+    Date birthday;
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
 
 
-    public User( String user_name, String last_name, String gender, String picture, String birthday, String email) {
+    public User( String user_name, String last_name, String gender, String picture, Date birthday, String email) {
         this.user_name = user_name;
         this.last_name = last_name;
         this.gender = gender;
@@ -210,11 +211,11 @@ public class User {
         this.mobile_phone = mobile_phone;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(String birthday) {
+    public void setBirthday(java.sql.Date birthday) {
         this.birthday = birthday;
     }
 
