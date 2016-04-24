@@ -53,7 +53,7 @@ public class Home {
     String exterior_number;
     int postal_code;
     String deleg_municip;
-    double lenght;
+    double length;
     double latitude;
     String aditional_information;
     @Temporal(TemporalType.TIMESTAMP)
@@ -63,7 +63,7 @@ public class Home {
 
     public Home(String home_name, String url, String telephone, long creator_id, 
                 String street, String neighborhood,String exterior_number,
-                int postal_code, String deleg_municip, double lenght, double latitude ) {
+                int postal_code, String deleg_municip, double length, double latitude ) {
 
         this.home_name = home_name;
         this.url = url;
@@ -74,7 +74,7 @@ public class Home {
         this.exterior_number = exterior_number;
         this.postal_code= postal_code;
         this.deleg_municip = deleg_municip;
-        this.lenght=lenght;
+        this.length=length;
 	    this.latitude=latitude;
     
     }
@@ -133,8 +133,8 @@ public class Home {
         this.deleg_municip = deleg_municip;
     }
 
-    public void setLenght(double lenght) {
-        this.lenght = lenght;
+    public void setLength(double length) {
+        this.length = length;
     }
 
     public void setLatitude(double latitude) {
@@ -198,8 +198,8 @@ public class Home {
         return deleg_municip;
     }
 
-    public double getLenght() {
-        return lenght;
+    public double getLength() {
+        return length;
     }
 
     public double getLatitude() {
