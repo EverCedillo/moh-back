@@ -1,8 +1,13 @@
 package mx.ohanahome.app.backend.entity;
 
-import java.sql.Date;
 
+
+import java.util.Date;
+
+import javax.jdo.annotations.Value;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -19,8 +24,9 @@ public class UserHome {
 
 
 
+
     @Temporal(TemporalType.TIMESTAMP)
-    Date creation_date;
+    Date creation_date = new Date();
 
     private long id_user;
     private long id_home;

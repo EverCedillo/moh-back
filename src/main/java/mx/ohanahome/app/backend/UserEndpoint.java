@@ -46,23 +46,22 @@ public class UserEndpoint {
     /**
      * This method gets the <code>User</code> object associated with the specified <code>id</code>.
      *
-     * @param loginPackage The <code>LoginPackage</code> containing the user info.
+     * @param id The id of the <code>User</code> or <code>Identify</code> object.
      * @return The <code>User</code> associated with <code>id</code>.
      */
     @ApiMethod(name = "getUser")
-    public User getUser(LoginPackage loginPackage, @Named("requestType")int flag) throws MOHException{
+    public User getUser(@Named("id")long id, @Named("requestType")int flag) throws MOHException{
 
         User user=null;
         DbConnection connection = new DbConnection();
         EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
         switch (flag){
             case FIND_BY_ID:
-                long id=loginPackage.getUser().getId_user();
                 user = manager.find(User.class,id);
                 break;
             case FIND_BY_IDENTITY:
-                MOHQuery<User> query = new MOHQuery<>(manager);
-                user = query.select(User.class, Constants.TOH_USER.ID_IDENTIFY+"="+loginPackage.getIdentify().getId_identify());
+                Identify identify = manager.find(Identify.class,id);
+                user=identify.getUser();
                 break;
         }
         if(user==null) throw new MOHException(Status.WRONG_USER.getMessage(),Status.WRONG_USER.getCode());
@@ -78,7 +77,7 @@ public class UserEndpoint {
      * @param  loginPackage Package with <code>User</code> and <code>Identify</code> object to be updated.
      * @return The object updated
      */
-    @ApiMethod(name = "updateUser",path = "me")
+    @ApiMethod(name = "updateUser")
     public User updateUser (LoginPackage loginPackage)throws MOHException{
         DbConnection connection = new DbConnection();
         EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
@@ -88,20 +87,15 @@ public class UserEndpoint {
         if (status!=Status.OK) throw new MOHException(status.getMessage(),status.getCode());
         status = verifyIdentity(loginPackage.getIdentify(), manager);
         if(status!=Status.USER_ALREADY_EXISTS) throw new MOHException(status.getMessage(),status.getCode());
-
-        User user;
-        user = getUser(loginPackage,FIND_BY_ID);
-        Identify identify = manager.find(Identify.class,user.getIdentify().getId_identify());
-
+        Identify identify = (Identify)status.getResponse();
+        User user =identify.getUser();
         manager.getTransaction().begin();
-        identify.updateIdentify(loginPackage.getIdentify());
-        user.updateValues(loginPackage.getUser());
-        user.setIdentify(identify);
+        user.mergeValues(loginPackage.getUser());
         user.setModification_date(new java.util.Date());
 
         manager.persist(user);
         manager.getTransaction().commit();
-
+        manager.close();
         return user;
     }
 
@@ -113,9 +107,7 @@ public class UserEndpoint {
      */
     @ApiMethod(name = "insertUser")
     public User insertUser(LoginPackage loginPackage) throws MOHException{
-        DbConnection connection = new DbConnection();
 
-        EntityManager manager =connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
 
         Status status;
         Identify identify = loginPackage.getIdentify();
@@ -123,6 +115,10 @@ public class UserEndpoint {
         status = validateFields(loginPackage);
         if(status!=Status.OK)
             throw new MOHException(status.getMessage(),status.getCode());
+
+        DbConnection connection = new DbConnection();
+        EntityManager manager =connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
+
         status = verifyIdentity(identify, manager);
         if (status!=Status.OK)
             throw new MOHException(status.getMessage(),status.getCode());
@@ -162,14 +158,11 @@ public class UserEndpoint {
 
 
 
-        if(query==null||identify==null)
-            return Status.WRONG_USER;
-
         query.setParameter(1,identify.getId_adapter());
         query.setParameter(2,identify.getAdapter());
         List<Identify> ids = query.getResultList();
         Identify ident = ids.isEmpty()?null:ids.get(0);
-        if(ident!=null) return Status.USER_ALREADY_EXISTS;
+        if(ident!=null) return Status.USER_ALREADY_EXISTS.withResponse(ident);
         else return Status.OK;
     }
 
@@ -189,6 +182,14 @@ public class UserEndpoint {
 
         private int code;
         private String message;
+        private Object response;
+
+
+        Status(int code, String message, Object response) {
+            this.code = code;
+            this.message = message;
+            this.response = response;
+        }
 
         Status(int code, String message) {
             this.code = code;
@@ -198,9 +199,17 @@ public class UserEndpoint {
         public int getCode() {
             return code;
         }
+        public Status withResponse(Object response){
+            this.response= response;
+            return this;
+        }
 
         public String getMessage() {
             return message;
+        }
+
+        public Object getResponse() {
+            return response;
         }
     }
 

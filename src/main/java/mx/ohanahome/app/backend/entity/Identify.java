@@ -25,7 +25,7 @@ public class Identify {
     @Column(name = "id_identify")
     private long id_identify;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="id_user")
     private User user;
 
@@ -35,14 +35,14 @@ public class Identify {
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
-    Date modification_time;
+    Date modification_date;
 
     public Identify(String id_adapter, String adapter, String email, Date creation_date, Date modification_date) {
         this.id_adapter = id_adapter;
         this.adapter = adapter;
         this.email = email;
         this.creation_date = creation_date;
-        this.modification_time = modification_date;
+        this.modification_date = modification_date;
     }
 
     public Identify updateIdentify(Identify identify) {
@@ -50,7 +50,8 @@ public class Identify {
         this.adapter = identify.adapter;
         this.email = identify.email;
         this.creation_date = identify.creation_date;
-        this.modification_time = identify.modification_time;
+        this.modification_date = identify.modification_date;
+        this.user=identify.user;
         return this;
     }
 
@@ -76,7 +77,7 @@ public class Identify {
     }
 
     public void setModification_date(Date modification_date) {
-        this.modification_time = modification_date;
+        this.modification_date = modification_date;
     }
 
     public long getId_identify() {
@@ -101,11 +102,10 @@ public class Identify {
     }
 
     public Date getModification_date() {
-        return modification_time;
+        return modification_date;
     }
 
     public Identify(){
-
 
     }
 

@@ -9,7 +9,8 @@
                 mx.ohanahome.app.backend.MessagingEndpoint,
                 mx.ohanahome.app.backend.DummyEndpoint,
                 mx.ohanahome.app.backend.Dummy2Endpoint, mx.ohanahome.app.backend.UserEndpoint,
-                mx.ohanahome.app.backend.Dummy3Endpoint</param-value>
+                mx.ohanahome.app.backend.Dummy3Endpoint,
+                mx.ohanahome.app.backend.HomeEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

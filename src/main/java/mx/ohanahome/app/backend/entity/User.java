@@ -5,6 +5,7 @@ package mx.ohanahome.app.backend.entity;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,29 +25,29 @@ import javax.persistence.TemporalType;
 
 @Table(name = "TOH_USER")
 @Entity
-public class User {
+public class User{
 
     @GeneratedValue(generator = "increment")
     @Column(name="id_user")
     @Id
     private long id_user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name= "TOH_USER_HOME",
             joinColumns=@JoinColumn(name="id_user"),
             inverseJoinColumns=@JoinColumn(name="id_home"))
     private List<Home> homes;
 
-    //Esta relación causa conflicto,
+    /*/Esta relación causa conflicto,
     @ManyToMany
     @JoinTable(
             name="TOH_PAYEE",
             joinColumns=@JoinColumn(name="id_payee_received"),
             inverseJoinColumns=@JoinColumn(name="id_payee_provided"))
-    private List<Payee> payees;
+    private List<Payee> payees; //*/
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="TOH_USER_ROLE",
             joinColumns=@JoinColumn(name="id_user"),
@@ -55,7 +56,7 @@ public class User {
 
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="TOH_USER_INTOLERANCE",
             joinColumns=@JoinColumn(name="id_user"),
@@ -63,7 +64,7 @@ public class User {
     private List<Intolerance> intolerances;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="TOH_USER_ILLNESS",
             joinColumns=@JoinColumn(name="id_user"),
@@ -71,12 +72,8 @@ public class User {
     private List<Illness> illnesses;
 
 
-    @ManyToMany(mappedBy="user")
+    @ManyToMany(mappedBy="user", fetch = FetchType.EAGER)
     private List<PurchaseLimit> purchases;
-
-
-    @OneToOne(fetch= FetchType.LAZY, mappedBy = "user")
-    private Identify identify;
 
 
     String user_name;
@@ -86,8 +83,8 @@ public class User {
     String mobile_phone;
     Date birthday;
     String email;
-    int height;
-    int weight;
+    Integer height;
+    Integer weight;
     String pin;
     String pattern;
 
@@ -106,22 +103,21 @@ public class User {
         this.email=email;
     }
 
-    public User updateValues(User user) {
+    public User mergeValues(User user) {
 
-        this.identify = user.identify;
-        this.user_name = user.user_name;
-        this.last_name = user.last_name;
-        this.gender = user.gender;
-        this.picture = user.picture;
-        this.mobile_phone = user.mobile_phone;
-        this.birthday = user.birthday;
-        this.email = user.email;
-        this.height = user.height;
-        this.weight = user.weight;
-        this.pin = user.pin;
-        this.pattern = user.pattern;
-        this.creation_date = user.creation_date;
-        this.modification_date = user.modification_date;
+        this.user_name = user.user_name==null?this.user_name:user.user_name;
+        this.last_name = user.last_name==null?this.last_name:user.last_name;
+        this.gender = user.gender==null?this.gender:user.gender;
+        this.picture = user.picture==null?this.picture:user.picture;
+        this.mobile_phone = user.mobile_phone==null?this.mobile_phone:user.mobile_phone;
+        this.birthday = user.birthday==null?this.birthday:user.birthday;
+        this.email = user.email==null?this.email:user.email;
+        this.height = user.height==null?this.height:user.height;
+        this.weight = user.weight==null?this.weight:user.weight;
+        this.pin = user.pin==null?this.pin:user.pin;
+        this.pattern = user.pattern==null?this.pattern:user.pattern;
+        this.creation_date = user.creation_date==null?this.creation_date:user.creation_date;
+        this.modification_date = user.modification_date==null?this.modification_date:user.modification_date;
 
         return this;
     }
@@ -142,13 +138,14 @@ public class User {
         this.homes = homes;
     }
 
+    /*/
     public List<Payee> getPayees() {
         return payees;
     }
 
     public void setPayees(List<Payee> payees) {
         this.payees = payees;
-    }
+    }//*/
 
     public List<Role> getRoles() {
         return roles;
@@ -182,13 +179,6 @@ public class User {
         this.purchases = purchases;
     }
 
-    public Identify getIdentify() {
-        return identify;
-    }
-
-    public void setIdentify(Identify identify) {
-        this.identify = identify;
-    }
 
     public String getUser_name() {
         return user_name;
@@ -246,7 +236,7 @@ public class User {
         this.email = email;
     }
 
-    public int getHeight() {
+    public Integer getHeight() {
         return height;
     }
 
@@ -254,7 +244,7 @@ public class User {
         this.height = height;
     }
 
-    public int getWeight() {
+    public Integer getWeight() {
         return weight;
     }
 
@@ -294,7 +284,9 @@ public class User {
         this.modification_date = modification_date;
     }
 
-
+    public void addHome(Home home){
+        homes.add(home);
+    }
     public User(){
 
     }

@@ -6,7 +6,7 @@ package mx.ohanahome.app.backend.util;
 public class Constants {
     public static final String UNIVERSAL_ALIAS = "a";
 
-    public static final String USER_DATABASE = "USER_DATABASE";
+    public static final String USER_DATABASE = "USER_DB";
 
     public enum TOH_USER{
         ID("id"),EMAIL("email"),ID_ADAPTER("id_adapter"),ADAPTER("adapter"),ID_IDENTIFY("id_identify");
