@@ -11,6 +11,7 @@ public class MOHException extends Exception {
     public static final int STATUS_NOT_ENOUGH_DATA = 1;
     public static final int STATUS_OBJECT_NOT_FOUND = 2;
     public static final int STATUS_OBJECT_NOT_ACCESSIBLE = 3;
+    public static final int STATUS_AUTH_ERROR = 4;
 
     public MOHException(String mssg, int code){
         super(mssg);

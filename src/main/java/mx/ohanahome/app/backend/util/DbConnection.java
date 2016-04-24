@@ -13,10 +13,10 @@ import javax.persistence.Persistence;
 
 
 public class DbConnection {
-    public static final String USER = "gae";
+    public static final String USER = "test_gae";
     public static final String PASSWORD = "gae_psw";
     public static final String DRIVER = "com.mysql.jdbc.GoogleDriver";
-    public static final String PROJECT = "jdbc:google:mysql://moh-333:test/";
+    public static final String PROJECT = "jdbc:google:mysql://moh-333:test2/";
 
 
     public Connection connection;
