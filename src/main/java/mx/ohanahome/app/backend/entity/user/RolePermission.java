@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -43,4 +43,9 @@ public class RolePermission {
     }
 
     public RolePermission(){}
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RolePermission && ((RolePermission)obj).getId_role_permission()==this.getId_role_permission();
+    }
 }

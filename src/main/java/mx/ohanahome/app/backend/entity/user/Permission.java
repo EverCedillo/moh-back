@@ -1,6 +1,6 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Created by brenda on 4/17/16.
@@ -23,7 +21,7 @@ public class Permission {
     private long id_permission;
 
     @ManyToMany(mappedBy="permissions")
-    private List<Role> roles;
+    private Set<Role> roles;
 
     String permission_name;
 
@@ -53,4 +51,8 @@ public class Permission {
     public Permission (){
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Permission && ((Permission)obj).getId_permission()==this.getId_permission();
+    }
 }

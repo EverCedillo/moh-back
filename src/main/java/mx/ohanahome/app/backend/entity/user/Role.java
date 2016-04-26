@@ -1,16 +1,18 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Created by brenda on 4/17/16.
@@ -18,24 +20,26 @@ import javax.persistence.TemporalType;
 @Table(name = "TOH_ROLE")
 @Entity
 public class Role {
+    @GeneratedValue(generator = "increment")
     @Id
     @Column(name="id_role")
     private long id_role;
 
-    @ManyToMany(mappedBy="roles")
-    private List<User> users;
+    @OneToMany(mappedBy="role", cascade = CascadeType.ALL)
+    private Set<UserRole> userRoles;
 
     @ManyToMany
     @JoinTable(
             name="TOH_ROLE_PERMISSION",
             joinColumns=@JoinColumn(name="id_role", referencedColumnName="id_role"),
             inverseJoinColumns=@JoinColumn(name="id_permission", referencedColumnName="id_permission"))
-    private List<Permission> permissions;
+    private Set<Permission> permissions;
 
 
     String role_name;
 
-    public Role(String role_name){
+
+    public Role(String role_name) {
         this.role_name = role_name;
     }
 
@@ -47,19 +51,13 @@ public class Role {
         this.id_role = id_role;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 
-    public List<Permission> getPermissions() {
+    public Set<Permission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(List<Permission> permissions) {
+    public void setPermissions(Set<Permission> permissions) {
         this.permissions = permissions;
     }
 
@@ -72,5 +70,16 @@ public class Role {
     }
 
     public Role(){}
+
+    public void addUserRole(UserRole userRole){
+        if(userRoles==null)
+            userRoles=new HashSet<>();
+        userRoles.add(userRole);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Role && ((Role)obj).getId_role()==this.getId_role();
+    }
 }
 

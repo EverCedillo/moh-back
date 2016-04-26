@@ -20,7 +20,7 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import mx.ohanahome.app.backend.entity.RegistrationRecord;
+import mx.ohanahome.app.backend.entity.user.RegistrationRecord;
 import mx.ohanahome.app.backend.util.DbConnection;
 
 
