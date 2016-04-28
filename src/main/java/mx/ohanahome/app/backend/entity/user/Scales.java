@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
 import java.sql.Date;
 
@@ -22,7 +22,7 @@ public class Scales {
     @Id
     private long id_scales;
 
-    @ManyToOne(fetch= FetchType.LAZY)
+    @ManyToOne(fetch= FetchType.EAGER)
     @JoinColumn(name="id_home")
     private Home home_scales;
 
@@ -102,4 +102,9 @@ public class Scales {
     }
 
     public Scales (){}
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Scales && ((Scales)obj).getId_scales()==this.getId_scales();
+    }
 }

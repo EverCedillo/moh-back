@@ -1,17 +1,14 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 //import com.googlecode.objectify.annotation.Entity;
 //import com.googlecode.objectify.annotation.Id;
 
-import java.util.List;
+import java.util.Set;
 import java.util.Date;
 
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,7 +25,7 @@ public class Payee {
     private PayeeId id;
 
     @ManyToMany(mappedBy="payees")
-    private List<User> users;
+    private Set<User> users;
 
 
 
@@ -92,6 +89,11 @@ public class Payee {
     }
 
     public Payee(){}
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Payee && ((Payee)obj).getId().equals(this.getId());
+    }
 }
 
 @Embeddable
@@ -113,5 +115,12 @@ class PayeeId{
 
     public void setId_payee_provided(long id_payee_provided) {
         this.id_payee_provided = id_payee_provided;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PayeeId
+                && ((PayeeId)obj).getId_payee_provided()==this.getId_payee_provided()
+                &&((PayeeId)obj).getId_payee_received()==this.getId_payee_received();
     }
 }

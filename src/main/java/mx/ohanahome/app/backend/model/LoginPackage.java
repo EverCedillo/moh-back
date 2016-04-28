@@ -2,8 +2,8 @@ package mx.ohanahome.app.backend.model;
 
 import java.sql.Date;
 
-import mx.ohanahome.app.backend.entity.Identify;
-import mx.ohanahome.app.backend.entity.User;
+import mx.ohanahome.app.backend.entity.user.Identify;
+import mx.ohanahome.app.backend.entity.user.User;
 
 /**
  * Created by ever on 18/04/16.

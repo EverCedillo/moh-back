@@ -1,9 +1,11 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
 
+
+import com.google.appengine.repackaged.org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,7 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,6 +26,7 @@ import javax.persistence.TemporalType;
  * Created by brenda on 4/3/16.
  */
 
+@NamedQuery(name = "User.findUserByEmail",query = "select t from User t where email = :email")
 @Table(name = "TOH_USER")
 @Entity
 public class User{
@@ -32,12 +36,13 @@ public class User{
     @Id
     private long id_user;
 
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name= "TOH_USER_HOME",
             joinColumns=@JoinColumn(name="id_user"),
             inverseJoinColumns=@JoinColumn(name="id_home"))
-    private List<Home> homes;
+    private Set<Home> homes;
 
     /*/Esta relación causa conflicto,
     @ManyToMany
@@ -45,14 +50,10 @@ public class User{
             name="TOH_PAYEE",
             joinColumns=@JoinColumn(name="id_payee_received"),
             inverseJoinColumns=@JoinColumn(name="id_payee_provided"))
-    private List<Payee> payees; //*/
+    private Set<Payee> payees; //*/
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name="TOH_USER_ROLE",
-            joinColumns=@JoinColumn(name="id_user"),
-            inverseJoinColumns=@JoinColumn(name="id_user_role"))
-    private List<Role> roles;
+    @OneToMany(mappedBy="user",fetch = FetchType.EAGER)
+    private Set<UserRole> userRoles;
 
 
 
@@ -61,7 +62,7 @@ public class User{
             name="TOH_USER_INTOLERANCE",
             joinColumns=@JoinColumn(name="id_user"),
             inverseJoinColumns=@JoinColumn(name="id_user_intolerance"))
-    private List<Intolerance> intolerances;
+    private Set<Intolerance> intolerances;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -69,11 +70,11 @@ public class User{
             name="TOH_USER_ILLNESS",
             joinColumns=@JoinColumn(name="id_user"),
             inverseJoinColumns=@JoinColumn(name="id_user_illness"))
-    private List<Illness> illnesses;
+    private Set<Illness> illnesses;
 
 
     @ManyToMany(mappedBy="user", fetch = FetchType.EAGER)
-    private List<PurchaseLimit> purchases;
+    private Set<PurchaseLimit> purchases;
 
 
     String user_name;
@@ -135,52 +136,62 @@ public class User{
         this.id_user = id_user;
     }
 
-    public List<Home> getHomes() {
+    @JsonIgnore
+    public Set<Home> getHomes() {
         return homes;
     }
 
-    public void setHomes(List<Home> homes) {
+    public void setHomes(Set<Home> homes) {
         this.homes = homes;
     }
 
     /*/
-    public List<Payee> getPayees() {
+    public Set<Payee> getPayees() {
         return payees;
     }
 
-    public void setPayees(List<Payee> payees) {
+    public void setPayees(Set<Payee> payees) {
         this.payees = payees;
     }//*/
 
-    public List<Role> getRoles() {
-        return roles;
-    }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-    public List<Intolerance> getIntolerances() {
+    public Set<Intolerance> getIntolerances() {
         return intolerances;
     }
 
-    public void setIntolerances(List<Intolerance> intolerances) {
+    public void setIntolerances(Set<Intolerance> intolerances) {
         this.intolerances = intolerances;
     }
 
-    public List<Illness> getIllnesses() {
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
+    }
+
+    public Set<Illness> getIllnesses() {
         return illnesses;
     }
 
-    public void setIllnesses(List<Illness> illnesses) {
+    public void setIllnesses(Set<Illness> illnesses) {
         this.illnesses = illnesses;
     }
 
-    public List<PurchaseLimit> getPurchases() {
+    public Set<PurchaseLimit> getPurchases() {
         return purchases;
     }
 
-    public void setPurchases(List<PurchaseLimit> purchases) {
+    public void setPurchases(Set<PurchaseLimit> purchases) {
         this.purchases = purchases;
     }
 
@@ -245,21 +256,6 @@ public class User{
         this.email = email;
     }
 
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public Integer getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
 
     public String getPin() {
         return pin;
@@ -298,5 +294,14 @@ public class User{
     }
     public User(){
 
+    }
+
+    public void addUserRole(UserRole userRole){
+        userRoles.add(userRole);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User && ((User)obj).getId_user()==this.getId_user();
     }
 }

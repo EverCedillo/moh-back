@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
 import java.util.Date;
 
@@ -8,6 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -16,6 +18,9 @@ import javax.persistence.TemporalType;
 /**
  * Created by brenda on 4/3/16.
  */
+@NamedQueries(
+        @NamedQuery(name = "Identify.verifyIdentity", query = "select i from Identify i where i.id_adapter=:id_adapter and i.adapter=:adapter")
+)
 @Table(name = "TOH_IDENTIFY")
 @Entity
 public class Identify {
@@ -85,6 +90,12 @@ public class Identify {
     }
 
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Identify && ((Identify)obj).getId_identify()== this.getId_identify();
+    }
+
+
     public String getId_adapter() {
         return id_adapter;
     }
@@ -116,4 +127,6 @@ public class Identify {
     public void setUser(User user) {
         this.user = user;
     }
+
+
 }

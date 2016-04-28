@@ -1,7 +1,7 @@
 package mx.ohanahome.app.backend.model;
 
-import mx.ohanahome.app.backend.entity.Home;
-import mx.ohanahome.app.backend.entity.Identify;
+import mx.ohanahome.app.backend.entity.user.Home;
+import mx.ohanahome.app.backend.entity.user.Identify;
 
 /**
  * Created by ever on 24/04/16.

@@ -1,6 +1,6 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +22,7 @@ public class Illness {
     private long id_illness;
 
     @ManyToMany(mappedBy="illnesses")
-    private List<User> users;
+    private Set<User> users;
 
     String illness_name;
 
@@ -52,4 +52,8 @@ public class Illness {
 
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Illness && ((Illness)obj).getId_illness()==this.getId_illness();
+    }
 }

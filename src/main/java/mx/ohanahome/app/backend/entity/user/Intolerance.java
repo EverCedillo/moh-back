@@ -1,6 +1,6 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +22,7 @@ public class Intolerance {
     private long id_intolerance;
 
     @ManyToMany(mappedBy="intolerances")
-    private List<User> users;
+    private Set<User> users;
 
 
     String intolerance_name;
@@ -53,4 +53,8 @@ public class Intolerance {
 
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Intolerance && ((Intolerance)obj).getId_intolerance()==this.getId_intolerance();
+    }
 }

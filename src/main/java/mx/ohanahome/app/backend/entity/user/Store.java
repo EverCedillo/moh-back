@@ -1,7 +1,7 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
 import java.sql.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +25,7 @@ public class Store {
     private long id_store;
 
     @ManyToMany(mappedBy= "stores")
-    private List<Home>homes;
+    private Set<Home>homes;
 
     String store_name;
     String address;
@@ -81,4 +81,9 @@ public class Store {
     }
 
     public Store (){}
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Store && ((Store)obj).getId_store()==this.getId_store();
+    }
 }

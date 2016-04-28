@@ -1,4 +1,4 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
 import java.sql.Date;
 
@@ -12,11 +12,11 @@ import javax.persistence.TemporalType;
 /**
  * Created by brenda on 4/3/16.
  */
-@Table(name = "TOH_USER_ILLNESS")
+@Table(name = "TOH_USER_INTOLERANCE")
 @Entity
-public class UserIllness {
+public class UserIntolerance {
     @Id
-    private long id_user_illness;
+    private long id_user_intolerance;
 
 
 
@@ -25,8 +25,9 @@ public class UserIllness {
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
 
+
+    private long id_intolerance;
     private long id_user;
-    private long id_illness;
 
     public void setCreation_date(Date creation_date) {
         this.creation_date = creation_date;
@@ -44,31 +45,30 @@ public class UserIllness {
         return modification_date;
     }
 
-    public void setId_user_illness(long id_user_illness) {
-        this.id_user_illness = id_user_illness;
+    public void setId_user_intolerance(long id_user_intolerance) {
+        this.id_user_intolerance = id_user_intolerance;
+    }
+
+    public void setId_intolerance(long id_intolerance) {
+        this.id_intolerance = id_intolerance;
     }
 
     public void setId_user(long id_user) {
         this.id_user = id_user;
     }
 
-    public void setId_illness(long id_illness) {
-        this.id_illness = id_illness;
+
+    public long getId_user_intolerance() {
+        return id_user_intolerance;
     }
 
-
-    public long getId_user_illness() {
-        return id_user_illness;
+    public long getId_intolerance() {
+        return id_intolerance;
     }
 
     public long getId_user() {
         return id_user;
     }
-
-    public long getId_illness() {
-        return id_illness;
-    }
-
-    public UserIllness(){}
+    public UserIntolerance(){}
 
 }

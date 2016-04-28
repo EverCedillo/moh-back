@@ -1,10 +1,7 @@
-package mx.ohanahome.app.backend.entity;
+package mx.ohanahome.app.backend.entity.user;
 
 
 import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Generated;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -144,4 +141,9 @@ public class PurchaseLimit {
     }
 
     public PurchaseLimit(){}
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PurchaseLimit && ((PurchaseLimit)obj).getId_purchase_limit()==this.getId_purchase_limit();
+    }
 }
