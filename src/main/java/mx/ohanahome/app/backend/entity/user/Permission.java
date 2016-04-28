@@ -1,5 +1,8 @@
 package mx.ohanahome.app.backend.entity.user;
 
+import com.google.appengine.repackaged.org.codehaus.jackson.annotate.JsonIgnore;
+
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -8,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import static mx.ohanahome.app.backend.util.Constants.CPermission.*;
 
 /**
  * Created by brenda on 4/17/16.
@@ -51,8 +56,23 @@ public class Permission {
     public Permission (){
     }
 
+    @JsonIgnore
+    public static Set<Permission> getNormalPermissions(){
+        Set<Permission> permissions = new HashSet<>();
+        permissions.add(new Permission(SHOP_PERMISSION));
+        return permissions;
+    }
+
+    @JsonIgnore
+    public static Set<Permission> getAdminPermissions(){
+        Set<Permission> permissions = new HashSet<>();
+        permissions.add(new Permission(GRANT_PERMISSION));
+        permissions.add(new Permission(REVOKE_PERMISSION));
+        return permissions;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Permission && ((Permission)obj).getId_permission()==this.getId_permission();
+        return obj instanceof Permission && ((Permission)obj).getPermission_name().equals(this.getPermission_name());
     }
 }

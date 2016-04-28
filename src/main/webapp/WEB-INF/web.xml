@@ -10,7 +10,9 @@
                 mx.ohanahome.app.backend.DummyEndpoint,
                 mx.ohanahome.app.backend.Dummy2Endpoint, mx.ohanahome.app.backend.UserEndpoint,
                 mx.ohanahome.app.backend.Dummy3Endpoint,
-                mx.ohanahome.app.backend.HomeEndpoint</param-value>
+                mx.ohanahome.app.backend.HomeEndpoint,
+                mx.ohanahome.app.backend.PermissionEndpoint,
+                mx.ohanahome.app.backend.StoreEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

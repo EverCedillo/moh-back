@@ -45,7 +45,7 @@ public class Dummy2Endpoint {
      */
     @ApiMethod(name = "getDummy2")
     public Dummy2 getDummy2(@Named("id") Long id) {
-        // TODO: Implement this function
+
         DbConnection connection = new DbConnection();
         Dummy2 dummy2;
         EntityManager manager=connection.getEntityManagerFactory("test_gae").createEntityManager();
@@ -63,7 +63,7 @@ public class Dummy2Endpoint {
      */
     @ApiMethod(name = "insertDummy2")
     public Dummy2 insertDummy2(Dummy2 dummy2) {
-        // TODO: Implement this function
+
         logger.info("Calling insertDummy2 method");
         return dummy2;
     }

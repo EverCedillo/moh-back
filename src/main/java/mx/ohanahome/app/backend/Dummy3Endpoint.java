@@ -37,7 +37,7 @@ public class Dummy3Endpoint {
      */
     @ApiMethod(name = "getDummy3")
     public Dummy3 getDummy3(@Named("id") Long id) {
-        // TODO: Implement this function
+
         Dummy3 dummy3;
         DbConnection connection = new DbConnection();
 
@@ -57,7 +57,7 @@ public class Dummy3Endpoint {
      */
     @ApiMethod(name = "insertDummy3")
     public Dummy3 insertDummy3(@Named("name") String name) {
-        // TODO: Implement this function
+
         Dummy3 dummy3 = new Dummy3();
         DbConnection connection = new DbConnection();
 

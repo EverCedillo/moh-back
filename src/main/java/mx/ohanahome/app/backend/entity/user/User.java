@@ -76,6 +76,7 @@ public class User{
     @ManyToMany(mappedBy="user", fetch = FetchType.EAGER)
     private Set<PurchaseLimit> purchases;
 
+    private Set<Role> roles;
 
     String user_name;
     String last_name;
@@ -294,5 +295,9 @@ public class User{
     @Override
     public boolean equals(Object obj) {
         return obj instanceof User && ((User)obj).getId_user()==this.getId_user();
+    }
+
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
     }
 }

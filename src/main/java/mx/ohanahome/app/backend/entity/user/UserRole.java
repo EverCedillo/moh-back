@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -14,6 +15,7 @@ import javax.persistence.TemporalType;
 /**
  * Created by brenda on 4/3/16.
  */
+@NamedQuery(name = "UserRole.findRole", query = "Select u from Role u, UserRole r where u.id_role=r.role_id and r.id_home=:id_home and r.id_user=:user)")
 @Table(name = "TOH_USER_ROLE")
 @Entity
 public class UserRole {

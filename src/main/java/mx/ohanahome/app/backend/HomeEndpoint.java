@@ -16,6 +16,7 @@ import javax.persistence.TypedQuery;
 
 import mx.ohanahome.app.backend.entity.user.Home;
 import mx.ohanahome.app.backend.entity.user.Identify;
+import mx.ohanahome.app.backend.entity.user.Permission;
 import mx.ohanahome.app.backend.entity.user.Role;
 import mx.ohanahome.app.backend.entity.user.User;
 import mx.ohanahome.app.backend.entity.user.UserRole;
@@ -57,7 +58,7 @@ public class HomeEndpoint {
         if(status!=Status.OK) throw new MOHException(status.getMessage(),status.getCode());
 */
         DbConnection connection  = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
+        EntityManager manager = connection.getEntityManagerFactory(Constants.DB.USER_DATABASE).createEntityManager();
 /*
         if(identify==null) throw new MOHException(Status.AUTH_ERROR.getMessage(),MOHException.STATUS_AUTH_ERROR);
         status = verifyIdentity(identify, manager);
@@ -70,6 +71,7 @@ public class HomeEndpoint {
         return home;
     }
 
+    //todo: if the role changes my permissions change as well, so insert new role,drop the existent, modify the name and permission?
 
     @ApiMethod(name = "linkUser", path = "myHome",httpMethod = ApiMethod.HttpMethod.POST)
     public Home linkUser(HomePackage homePackage) throws MOHException{
@@ -82,7 +84,7 @@ public class HomeEndpoint {
         if(status!=Status.OK) throw new MOHException(status.getMessage(),status.getCode());
 
         DbConnection connection  = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
+        EntityManager manager = connection.getEntityManagerFactory(Constants.DB.USER_DATABASE).createEntityManager();
 
         if(identify==null) throw new MOHException(Status.AUTH_ERROR.getMessage(),MOHException.STATUS_AUTH_ERROR);
         status = verifyIdentity(identify, manager);
@@ -99,6 +101,7 @@ public class HomeEndpoint {
         manager.getTransaction().begin();
         UserRole userRole = new UserRole();
         Role role = new Role(Constants.CRole.NORMAL_ROLE);
+        role.addPermissions(Permission.getNormalPermissions());
 
         userRole.setStart_date(new Date());
         userRole.setModification_date(new Date());
@@ -134,7 +137,7 @@ public class HomeEndpoint {
         if(status!=Status.OK) throw new MOHException(status.getMessage(),status.getCode());
 
         DbConnection connection  = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
+        EntityManager manager = connection.getEntityManagerFactory(Constants.DB.USER_DATABASE).createEntityManager();
 
         if(identify==null) throw new MOHException(Status.AUTH_ERROR.getMessage(),MOHException.STATUS_AUTH_ERROR);
         status = verifyIdentity(identify, manager);
@@ -157,6 +160,7 @@ public class HomeEndpoint {
         manager.persist(user);
 
         Role role = new Role(Constants.CRole.ADMIN_ROLE);
+        role.addPermissions(Permission.getAdminPermissions());
         manager.persist(role);
 
         UserRole userRole = new UserRole();
@@ -184,7 +188,7 @@ public class HomeEndpoint {
         if(status!=Status.OK) throw new MOHException(status.getMessage(),status.getCode());
 
         DbConnection connection = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
+        EntityManager manager = connection.getEntityManagerFactory(Constants.DB.USER_DATABASE).createEntityManager();
 
         if(identify==null) throw new MOHException(Status.AUTH_ERROR.getMessage(),MOHException.STATUS_AUTH_ERROR);
         status=verifyIdentity(identify,manager);

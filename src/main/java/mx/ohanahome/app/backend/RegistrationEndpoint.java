@@ -65,7 +65,7 @@ public class RegistrationEndpoint {
         }
         record = new RegistrationRecord();
         record.setRegId(regId);
-        //todo save entity record
+
 
         manager.getTransaction().begin();
         manager.persist(record);
@@ -93,7 +93,7 @@ public class RegistrationEndpoint {
             manager.close();
             return;
         }
-        //todo delete entity record
+
         manager.remove(record);
         manager.close();
     }
@@ -111,7 +111,7 @@ public class RegistrationEndpoint {
 
         TypedQuery<RegistrationRecord> query = manager.createQuery("select t FROM RegistrationRecord t",RegistrationRecord.class);
 
-        List<RegistrationRecord> records = query.getResultList(); //new ArrayList<>();//todo ofy().load().type(RegistrationRecord.class).limit(count).list();
+        List<RegistrationRecord> records = query.getResultList();
         manager.close();
         return CollectionResponse.<RegistrationRecord>builder().setItems(records).build();
     }

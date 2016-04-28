@@ -1,11 +1,13 @@
 package mx.ohanahome.app.backend.entity.user;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -28,7 +30,7 @@ public class Role {
     @OneToMany(mappedBy="role", cascade = CascadeType.ALL)
     private Set<UserRole> userRoles;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name="TOH_ROLE_PERMISSION",
             joinColumns=@JoinColumn(name="id_role", referencedColumnName="id_role"),
@@ -81,5 +83,15 @@ public class Role {
     public boolean equals(Object obj) {
         return obj instanceof Role && ((Role)obj).getId_role()==this.getId_role();
     }
+
+    public void addPermissions(Collection<Permission> permission){
+        permissions.addAll(permission);
+    }
+
+    public void removePermissions(Collection<Permission> permissions){
+        this.permissions.removeAll(permissions);
+    }
+
+
 }
 

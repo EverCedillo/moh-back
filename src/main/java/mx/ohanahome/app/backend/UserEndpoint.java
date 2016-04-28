@@ -3,7 +3,9 @@ package mx.ohanahome.app.backend;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -37,6 +39,8 @@ public class UserEndpoint {
 
     public static final int FIND_BY_ID = 0;
     public static final int FIND_BY_IDENTITY = 1;
+    public static final int UPDATE_USER = 2;
+    public static final int INSERT_USER = 3;
 
     /**
      * This method gets the <code>User</code> object associated with the specified <code>id</code>.
@@ -49,7 +53,7 @@ public class UserEndpoint {
 
         User user=null;
         DbConnection connection = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
+        EntityManager manager = connection.getEntityManagerFactory(Constants.DB.USER_DATABASE).createEntityManager();
         switch (flag){
             case FIND_BY_ID:
                 user = manager.find(User.class,id);
@@ -75,10 +79,10 @@ public class UserEndpoint {
     @ApiMethod(name = "updateUser")
     public User updateUser (LoginPackage loginPackage)throws MOHException{
         DbConnection connection = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
+        EntityManager manager = connection.getEntityManagerFactory(Constants.DB.USER_DATABASE).createEntityManager();
         Status status;
 
-        status = validateFields(loginPackage);
+        status = validateFields(loginPackage,UPDATE_USER);
         if (status!=Status.OK) throw new MOHException(status.getMessage(),status.getCode());
         status = verifyIdentity(loginPackage.getIdentify(), manager);
         if(status!=Status.USER_ALREADY_EXISTS) throw new MOHException(status.getMessage(),status.getCode());
@@ -107,12 +111,12 @@ public class UserEndpoint {
         Status status;
         Identify identify = loginPackage.getIdentify();
 
-        status = validateFields(loginPackage);
+        status = validateFields(loginPackage, INSERT_USER);
         if(status!=Status.OK)
             throw new MOHException(status.getMessage(),status.getCode());
 
         DbConnection connection = new DbConnection();
-        EntityManager manager =connection.getEntityManagerFactory(Constants.USER_DATABASE).createEntityManager();
+        EntityManager manager =connection.getEntityManagerFactory(Constants.DB.USER_DATABASE).createEntityManager();
 
         status = verifyIdentity(identify, manager);
         if (status!=Status.OK)
@@ -145,10 +149,6 @@ public class UserEndpoint {
 
     private Status verifyIdentity(Identify identify, EntityManager manager){
 
-
-
-
-
         TypedQuery<Identify> query = manager.createNamedQuery("Identify.verifyIdentity",Identify.class);
 
 
@@ -160,7 +160,36 @@ public class UserEndpoint {
         else return Status.OK;
     }
 
-    private Status validateFields(LoginPackage loginPackage){
+    private Status validateFields(LoginPackage loginPackage, int flag){
+        User user;
+        Identify identify;
+        RegularExpression expression = new RegularExpression("[a-zA-Z_-0-9]+@[a-zA-Z-_0-9]+(.[a-zA-Z])+");
+        boolean valid;
+        switch (flag){
+            case INSERT_USER:
+                user=loginPackage.getUser();
+                if(user==null) return Status.NOT_ENOUGH_DATA;
+                if(user.getEmail()==null||
+                        user.getGender()==null||
+                        user.getLast_name()==null||
+                        user.getUser_name()==null||
+                        user.getPicture()==null||
+                        user.getBirthday()==null) return Status.NOT_ENOUGH_DATA;
+                if(!user.getGender().equals(Constants.CUser.FEMALE_GENDER)||
+                        !user.getGender().equals(Constants.CUser.MALE_GENDER))
+                    return Status.NOT_ENOUGH_DATA;
+
+                if(!expression.matches(user.getEmail())) return Status.NOT_ENOUGH_DATA;
+
+                identify=loginPackage.getIdentify();
+                if(identify==null) return Status.NOT_ENOUGH_DATA;
+                if(identify.getEmail()==null) return Status.NOT_ENOUGH_DATA;
+                if(!expression.matches(identify.getEmail())) return Status.NOT_ENOUGH_DATA;
+
+                break;
+            case UPDATE_USER:
+                break;
+        }
         if(false)
         {
             return Status.NOT_ENOUGH_DATA;
