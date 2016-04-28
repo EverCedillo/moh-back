@@ -67,8 +67,8 @@ public class Home {
     Date modification_date;
 
     public Home(String home_name, String url, String telephone, long creator_id,
-                 String street, String neighborhood,String exterior_number,
-                 int postal_code, String deleg_municip, double longitude, double latitude ) {
+                String street, String neighborhood,String exterior_number,
+                int postal_code, String deleg_municip, double longitude, double latitude ) {
 
         this.home_name = home_name;
         this.url = url;
@@ -136,7 +136,7 @@ public class Home {
         this.creation_date = creation_date;
     }
 
-    
+
 
     public void setModification_date(Date modification_date) {
         this.modification_date = modification_date;
@@ -262,4 +262,3 @@ public class Home {
         return obj instanceof Home && ((Home) obj).getId_home() == this.getId_home();
     }
 }
-

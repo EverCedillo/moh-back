@@ -83,13 +83,14 @@ public class User{
     String gender;
     String picture;
     String mobile_phone;
-    Date birthday;
     String email;
     Integer height;
     Integer weight;
     String pin;
     String pattern;
 
+    @Temporal(TemporalType.DATE)
+    Date birthday;
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
@@ -236,7 +237,8 @@ public class User{
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+
+    public void setBirthday(java.sql.Date birthday) {
         this.birthday = birthday;
     }
 

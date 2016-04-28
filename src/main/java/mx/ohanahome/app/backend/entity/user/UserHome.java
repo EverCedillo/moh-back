@@ -22,9 +22,6 @@ public class UserHome {
     @Id
     private long id_user_home;
 
-
-
-
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date = new Date();
 

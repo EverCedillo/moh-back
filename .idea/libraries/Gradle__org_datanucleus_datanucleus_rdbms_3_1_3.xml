@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.datanucleus:datanucleus-rdbms:3.1.3">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-rdbms/3.1.3/3f1cee7839bd8125c33a0ed777b2641fab0d2921/datanucleus-rdbms-3.1.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-rdbms/3.1.3/bcdcdf75e96077193cfed067b265aa50c5506744/datanucleus-rdbms-3.1.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
