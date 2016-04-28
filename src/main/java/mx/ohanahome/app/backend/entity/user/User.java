@@ -82,10 +82,6 @@ public class User{
     String gender;
     String picture;
     String mobile_phone;
-<<<<<<< HEAD
-=======
-    Date birthday;
->>>>>>> 41406de807575e5302d011b2d66afc7317f8f5d5
     String email;
     Integer height;
     Integer weight;
@@ -240,11 +236,8 @@ public class User{
         return birthday;
     }
 
-<<<<<<< HEAD
+
     public void setBirthday(java.sql.Date birthday) {
-=======
-    public void setBirthday(Date birthday) {
->>>>>>> 41406de807575e5302d011b2d66afc7317f8f5d5
         this.birthday = birthday;
     }
 
