@@ -1,5 +1,7 @@
 package mx.ohanahome.app.backend.util;
 
+import javax.persistence.EntityManager;
+
 /**
  * Created by ever on 18/04/16.
  */
@@ -17,6 +19,7 @@ public class MOHException extends Exception {
         super(mssg);
         message=mssg;
         this.code=code;
+
     }
 
     @Override

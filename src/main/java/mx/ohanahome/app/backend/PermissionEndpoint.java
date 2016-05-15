@@ -5,7 +5,6 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 
-import java.lang.reflect.MalformedParameterizedTypeException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,7 +18,7 @@ import mx.ohanahome.app.backend.entity.user.Role;
 import mx.ohanahome.app.backend.entity.user.User;
 import mx.ohanahome.app.backend.model.PermissionPackage;
 import mx.ohanahome.app.backend.util.Constants;
-import mx.ohanahome.app.backend.util.DbConnection;
+import mx.ohanahome.app.backend.util.EMFUser;
 import mx.ohanahome.app.backend.util.MOHException;
 
 /**
@@ -30,8 +29,8 @@ import mx.ohanahome.app.backend.util.MOHException;
         version = "v1",
         resource = "permission",
         namespace = @ApiNamespace(
-                ownerDomain = "user.entity.backend.app.ohanahome.mx",
-                ownerName = "user.entity.backend.app.ohanahome.mx",
+                ownerDomain = "backend.app.ohanahome.mx",
+                ownerName = "backend.app.ohanahome.mx",
                 packagePath = ""
         )
 )
@@ -63,18 +62,22 @@ public class PermissionEndpoint {
         // TODO: Implement this function
         Status status;
         status=validateFields(permissionPackage);
+        Role role;
         if(status!=Status.STATUS_OK) throw new MOHException(status.getMessage(),status.getCode());
+        EntityManager manager = EMFUser.get().createEntityManager();
+        try {
+            status = verifyIdentities(permissionPackage, manager, Constants.CPermission.Admin.GRANT_PERMISSION);
+            if (status != Status.STATUS_OK)
+                throw new MOHException(status.getMessage(), status.getCode());
 
-        DbConnection connection= new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(Constants.DB.USER_DATABASE).createEntityManager();
-        status=verifyIdentities(permissionPackage, manager, new Permission(Constants.CPermission.GRANT_PERMISSION));
-        if(status!=Status.STATUS_OK) throw new MOHException(status.getMessage(),status.getCode());
-        Role role =(Role) status.getResponse();
+            role = (Role) status.getResponse();
 
-        manager.getTransaction().begin();
-        role.addPermission(permissionPackage.getPermissions());
-        manager.persist(role);
-        manager.close();
+            manager.getTransaction().begin();
+            role.addPermissions(permissionPackage.getPermissions());
+            manager.persist(role);
+        }finally {
+            manager.close();
+        }
 
         logger.info("Calling insertPermission method");
         return role;
@@ -83,21 +86,30 @@ public class PermissionEndpoint {
     @ApiMethod(name = "revokePermission", httpMethod = ApiMethod.HttpMethod.DELETE)
     public Role revokePermission(PermissionPackage permissionPackage) throws MOHException{
         Status status;
+        Role role;
         status=validateFields(permissionPackage);
         if(status!=Status.STATUS_OK) throw new MOHException(status.getMessage(),status.getCode());
+        EntityManager manager = EMFUser.get().createEntityManager();
 
-        DbConnection connection = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory(Constants.DB.USER_DATABASE).createEntityManager();
-        status = verifyIdentities(permissionPackage,manager,new Permission(Constants.CPermission.REVOKE_PERMISSION));
-        if(status!=Status.STATUS_OK) throw new MOHException(status.getMessage(),status.getCode());
-        Role role = (Role)status.getResponse();
+        //Todo if i remove an item from a collection it is removed from the database too?
+
+        try {
+
+            status = verifyIdentities(permissionPackage, manager, Constants.CPermission.Admin.REVOKE_PERMISSION);
+            if (status != Status.STATUS_OK)
+                throw new MOHException(status.getMessage(), status.getCode());
+
+            role = (Role) status.getResponse();
 
 
-        manager.getTransaction().begin();
-        role.removePermissions(permissionPackage.getPermissions());
-        manager.persist(role);
-        manager.getTransaction().commit();
+            manager.getTransaction().begin();
+            role.removePermissions(permissionPackage.getPermissions());
+            manager.persist(role);
+            manager.getTransaction().commit();
 
+        }finally {
+            manager.close();
+        }
         return role;
     }
 
@@ -107,11 +119,12 @@ public class PermissionEndpoint {
 
         User user = whoGrant.getUser();
 
+        permission=manager.find(Permission.class,permission.getId_permission());
 
-        //todo look for grant permission, look for permissions in the recipient
+
         TypedQuery<Role> query = manager.createNamedQuery("UserRole.findRole", Role.class);
-        query.setParameter(Constants.CUserRole.ID_HOME, permissionPackage.getHome().getId_home());
-        query.setParameter(Constants.CUserRole.ID_USER, user.getId_user());
+        query.setParameter(Constants.CUserRole.HOME, permissionPackage.getHome());
+        query.setParameter(Constants.CUserRole.USER, user);
         List<Role> roles = query.getResultList();
         Role role= roles.isEmpty()?null:roles.get(0);
         if(role==null) return Status.STATUS_AUTH_ERROR;
@@ -126,8 +139,8 @@ public class PermissionEndpoint {
 
         if(user==null) return Status.STATUS_OBJECT_NOT_ACCESSIBLE;
         query = manager.createNamedQuery("UserRole.findRole",Role.class);
-        query.setParameter(Constants.CUserRole.ID_USER,user.getId_user());
-        query.setParameter(Constants.CUserRole.ID_HOME, permissionPackage.getHome().getId_home());
+        query.setParameter(Constants.CUserRole.USER,user);
+        query.setParameter(Constants.CUserRole.HOME, permissionPackage.getHome());
         List<Role> roleList= query.getResultList();
         Role role1 = roleList.isEmpty()?null:roleList.get(0);
         if(role1== null) return Status.STATUS_OBJECT_NOT_ACCESSIBLE;

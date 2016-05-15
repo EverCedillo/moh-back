@@ -4,10 +4,8 @@
     version="2.0">
 
 
-    <persistence-unit name="mx.ohanahome.app.backend">
-        <class>mx.ohanahome.app.backend.entity.Dummy</class>
+    <persistence-unit name="user">
         <class>mx.ohanahome.app.backend.entity.user.RegistrationRecord</class>
-        <class>mx.ohanahome.app.backend.entity.Dummy2</class>
         <class>mx.ohanahome.app.backend.entity.user.Home</class>
         <class>mx.ohanahome.app.backend.entity.user.HomeStore</class>
         <class>mx.ohanahome.app.backend.entity.user.Identify</class>
@@ -25,11 +23,37 @@
         <class>mx.ohanahome.app.backend.entity.user.UserIllness</class>
         <class>mx.ohanahome.app.backend.entity.user.UserIntolerance</class>
         <class>mx.ohanahome.app.backend.entity.user.UserRole</class>
-        <class>mx.ohanahome.app.backend.entity.Dummy3</class>
         <exclude-unlisted-classes/>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.GoogleDriver"/>
+            <property name="javax.persistence.jdbc.user" value="test_gae"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:google:mysql://moh-333:test2/USER_DB"/>
+            <property name="javax.persistence.jdbc.password" value="gae_psw"/>
         </properties>
-
+    </persistence-unit>
+    <persistence-unit name="invitation">
+        <class>mx.ohanahome.app.backend.entity.invitation.Invitation</class>
+        <class>mx.ohanahome.app.backend.entity.invitation.Home</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.GoogleDriver"/>
+            <property name="javax.persistence.jdbc.user" value="test_gae"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:google:mysql://moh-333:test2/INVITATION_DB"/>
+            <property name="javax.persistence.jdbc.password" value="gae_psw"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="product">
+        <class>mx.ohanahome.app.backend.entity.product.Product</class>
+        <class>mx.ohanahome.app.backend.entity.product.ProductPrice</class>
+        <class>mx.ohanahome.app.backend.entity.product.Branch</class>
+        <class>mx.ohanahome.app.backend.entity.product.Store</class>
+        <class>mx.ohanahome.app.backend.entity.product.StoreProduct</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.GoogleDriver"/>
+            <property name="javax.persistence.jdbc.user" value="test_gae"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:google:mysql://moh-333:test2/PRODUCT_DB"/>
+            <property name="javax.persistence.jdbc.password" value="gae_psw"/>
+        </properties>
     </persistence-unit>
 </persistence>

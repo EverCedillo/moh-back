@@ -1,5 +1,7 @@
 package mx.ohanahome.app.backend.entity.user;
 
+import com.google.appengine.repackaged.org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +32,7 @@ public class Role {
     @OneToMany(mappedBy="role", cascade = CascadeType.ALL)
     private Set<UserRole> userRoles;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany( fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(
             name="TOH_ROLE_PERMISSION",
             joinColumns=@JoinColumn(name="id_role", referencedColumnName="id_role"),
@@ -73,6 +75,8 @@ public class Role {
 
     public Role(){}
 
+
+    @JsonIgnore
     public void addUserRole(UserRole userRole){
         if(userRoles==null)
             userRoles=new HashSet<>();
@@ -84,10 +88,13 @@ public class Role {
         return obj instanceof Role && ((Role)obj).getId_role()==this.getId_role();
     }
 
+    @JsonIgnore
     public void addPermissions(Collection<Permission> permission){
+        if(permissions==null)permissions=new HashSet<>();
         permissions.addAll(permission);
     }
 
+    @JsonIgnore
     public void removePermissions(Collection<Permission> permissions){
         this.permissions.removeAll(permissions);
     }

@@ -29,20 +29,20 @@ public class ProductPrice {
     @JoinColumn(name="id_product")
     private Product products;
 
-    double price;
-    double discount;
+    Double price;
+    Double discount;
 
 
-    public ProductPrice(double price, double discount){
+    public ProductPrice(Double price, Double discount){
         this.price = price;
         this.discount = discount;
     }
 
-    public double getDiscount() {
+    public Double getDiscount() {
         return discount;
     }
 
-    public void setDiscount(double discount) {
+    public void setDiscount(Double discount) {
         this.discount = discount;
     }
 
@@ -54,11 +54,11 @@ public class ProductPrice {
         this.date_from = date_from;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

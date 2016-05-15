@@ -7,12 +7,13 @@
             <param-name>services</param-name>
             <param-value>mx.ohanahome.app.backend.RegistrationEndpoint,
                 mx.ohanahome.app.backend.MessagingEndpoint,
-                mx.ohanahome.app.backend.DummyEndpoint,
-                mx.ohanahome.app.backend.Dummy2Endpoint, mx.ohanahome.app.backend.UserEndpoint,
-                mx.ohanahome.app.backend.Dummy3Endpoint,
+                mx.ohanahome.app.backend.UserEndpoint,
                 mx.ohanahome.app.backend.HomeEndpoint,
                 mx.ohanahome.app.backend.PermissionEndpoint,
-                mx.ohanahome.app.backend.StoreEndpoint</param-value>
+                mx.ohanahome.app.backend.StoreEndpoint,
+                mx.ohanahome.app.backend.InvitationEndpoint,
+                mx.ohanahome.app.backend.ProductEndpoint,
+                mx.ohanahome.app.backend.InfoEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

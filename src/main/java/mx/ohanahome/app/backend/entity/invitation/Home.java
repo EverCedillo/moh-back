@@ -1,26 +1,21 @@
-package mx.ohanahome.app.backend.entity.user;
+package mx.ohanahome.app.backend.entity.invitation;
 
 
-
-import com.google.appengine.repackaged.org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+
+
 
 /**
  * Created by brenda on 4/3/16.
@@ -29,27 +24,14 @@ import javax.persistence.TemporalType;
 @Table(name = "TOH_HOME")
 @Entity
 public class Home {
-    @GeneratedValue(generator = "increment")
+
     @Id
     @Column(name = "id_home")
     private long id_home;
 
-    @OneToMany(mappedBy="home_scales")
-    private Set<Scales> scales;
+    @OneToMany(mappedBy="home")
+    private Set<Invitation> invitations;
 
-    @OneToMany(mappedBy="home",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<UserRole> userRoles;
-
-
-    @ManyToMany(mappedBy= "homes",fetch = FetchType.EAGER)
-    private Set<User>users;
-
-    @ManyToMany
-    @JoinTable(
-            name="TOH_HOME_STORE",
-            joinColumns=@JoinColumn(name="id_home", referencedColumnName="id_home"),
-            inverseJoinColumns=@JoinColumn(name="id_store", referencedColumnName="id_store"))
-    private Set<Store> stores;
 
 
     String home_name;
@@ -71,8 +53,8 @@ public class Home {
     Date modification_date;
 
     public Home(String home_name, String url, String telephone, long creator_id,
-                String street, String neighborhood,String exterior_number,
-                int postal_code, String deleg_municip, double longitude, double latitude ) {
+                String street, String neighborhood, String exterior_number,
+                int postal_code, String deleg_municip, double longitude, double latitude) {
 
         this.home_name = home_name;
         this.url = url;
@@ -86,6 +68,25 @@ public class Home {
         this.longitude=longitude;
         this.latitude=latitude;
 
+    }
+
+    public Home(mx.ohanahome.app.backend.entity.user.Home home){
+        this.id_home=home.getId_home();
+        this.home_name=home.getHome_name()==null?home_name:home.getHome_name();
+        this.url=home.getUrl()==null?url:home.getUrl();
+        this.telephone=home.getTelephone()==null?telephone:home.getTelephone();
+        this.creator_id=home.getCreator_id()==null ?creator_id:home.getCreator_id();
+        this.street=home.getStreet()==null?street:home.getStreet();
+        this.neighborhood=home.getNeighborhood()==null?neighborhood:home.getNeighborhood();
+        this.interior_number=home.getInterior_number()==null?interior_number:home.getInterior_number();
+        this.exterior_number=home.getExterior_number()==null?exterior_number:home.getExterior_number();
+        this.postal_code=home.getPostal_code()==null? postal_code:home.getPostal_code();
+        this.deleg_municip=home.getDeleg_municip()==null?deleg_municip:home.getDeleg_municip();
+        this.longitude=home.getLongitude()==null?longitude:home.getLongitude();
+        this.latitude=home.getLatitude()== null?latitude:home.getLatitude();
+        this.aditional_information =home.getAditional_information()==null?aditional_information :home.getAditional_information();
+        this.creation_date=home.getCreation_date();
+        this.modification_date=home.getModification_date();
     }
 
     public void setCreator_id(Long creator_id) {
@@ -192,7 +193,7 @@ public class Home {
         return telephone;
     }
 
-    public Long getCreator_id() {
+    public long getCreator_id() {
         return creator_id;
     }
 
@@ -235,9 +236,8 @@ public class Home {
 
 
 
-
     public Home mergeValues(Home home){
-
+        this.id_home=home.getId_home();
         this.home_name=home.home_name==null?home_name:home.home_name;
         this.url=home.url==null?url:home.url;
         this.telephone=home.telephone==null?telephone:home.telephone;
@@ -251,22 +251,15 @@ public class Home {
         this.longitude=home.longitude==null?longitude:home.longitude;
         this.latitude=home.latitude==null?latitude:home.latitude;
         this.aditional_information=home.aditional_information==null?aditional_information:home.aditional_information;
+
         return this;
     }
 
 
-    public void addUserRole(UserRole userRole){
-        if(userRoles==null) userRoles= new HashSet<>();
-        userRoles.add(userRole);
-    }
 
-    public Home(){}
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Home && ((Home) obj).getId_home() == this.getId_home();
-    }
-
-    public Set<UserRole> getUserRoles() {
-        return userRoles;
     }
 }

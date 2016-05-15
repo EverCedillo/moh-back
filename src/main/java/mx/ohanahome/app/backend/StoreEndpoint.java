@@ -18,8 +18,8 @@ import mx.ohanahome.app.backend.entity.user.Store;
         version = "v1",
         resource = "store",
         namespace = @ApiNamespace(
-                ownerDomain = "user.entity.backend.app.ohanahome.mx",
-                ownerName = "user.entity.backend.app.ohanahome.mx",
+                ownerDomain = "backend.app.ohanahome.mx",
+                ownerName = "backend.app.ohanahome.mx",
                 packagePath = ""
         )
 )

@@ -7,12 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 
 /**
  * Created by brenda on 4/3/16.
  */
+
 @Table(name = "TOH_INTOLERANCE")
 @Entity
 public class Intolerance {
@@ -51,6 +53,11 @@ public class Intolerance {
 
     public Intolerance(){
 
+    }
+
+    public Intolerance(String intolerance_name, long id_intolerance) {
+        this.intolerance_name = intolerance_name;
+        this.id_intolerance = id_intolerance;
     }
 
     @Override
