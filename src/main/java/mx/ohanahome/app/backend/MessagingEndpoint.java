@@ -14,14 +14,12 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiNamespace;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
 import mx.ohanahome.app.backend.entity.user.RegistrationRecord;
-import mx.ohanahome.app.backend.util.DbConnection;
+import mx.ohanahome.app.backend.util.EMFUser;
 
 
 /**
@@ -50,11 +48,11 @@ public class MessagingEndpoint {
     private static final String API_KEY = System.getProperty("gcm.api.key");
 
     /**
-     * Send to the first 10 devices (You can modify this to send to any number of devices or a specific device)
+     *
      *
      * @param message The message to send
      */
-    public void sendMessage(@Named("message") String message) throws IOException {
+    public void sendMessage(@Named("message") String message, RegistrationRecord record, @Named("topic") String topic, @Named("extra")String extra) throws IOException {
         if(message == null || message.trim().length() == 0) {
             log.warning("Not sending message because it is empty");
             return;
@@ -64,37 +62,45 @@ public class MessagingEndpoint {
             message = message.substring(0, 1000) + "[...]";
         }
         Sender sender = new Sender(API_KEY);
-        DbConnection connection = new DbConnection();
-        Message msg = new Message.Builder().addData("message", message).build();
-        EntityManager entityManager= connection.getEntityManagerFactory("test_gae").createEntityManager();
-        TypedQuery<RegistrationRecord> query = entityManager.createQuery("select t FROM RegistrationRecord t",RegistrationRecord.class);
 
-        List<RegistrationRecord> records=query.getResultList();
+        Message msg = new Message.Builder().addData("message", message).addData("topic",topic).addData("extra",extra).build();
+        EntityManager entityManager= EMFUser.get().createEntityManager();
 
-        //here load into list the RegistrationRecord
-        for(RegistrationRecord record : records) {
-            Result result = sender.send(msg, record.getRegId(), 5);
+        try {
+
+
+            //here load into list the RegistrationRecord
+
+            Result result = sender.send(msg, record.getToken(), 5);
             if (result.getMessageId() != null) {
-                log.info("Message sent to " + record.getRegId());
+                log.info("Message sent to " + record.getToken());
                 String canonicalRegId = result.getCanonicalRegistrationId();
                 if (canonicalRegId != null) {
                     // if the regId changed, we have to update the datastore
-                    log.info("Registration Id changed for " + record.getRegId() + " updating to " + canonicalRegId);
-                    record.setRegId(canonicalRegId);
+                    log.info("Registration Id changed for " + record.getToken() + " updating to " + canonicalRegId);
+                    record.setToken(canonicalRegId);
                     //Here save object record
+                    entityManager.getTransaction().begin();
+                    entityManager.persist(record);
+                    entityManager.getTransaction().commit();
                 }
             } else {
                 String error = result.getErrorCodeName();
                 if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
-                    log.warning("Registration Id " + record.getRegId() + " no longer registered with GCM, removing from datastore");
+                    log.warning("Registration Id " + record.getToken() + " no longer registered with GCM, removing from datastore");
                     // if the device is no longer registered with Gcm, remove it from the datastore
                     //Here delete object record
-                }
-                else {
+                    entityManager.getTransaction().begin();
+                    entityManager.remove(record);
+                    entityManager.getTransaction().commit();
+                } else {
                     log.warning("Error when sending message : " + error);
                 }
             }
+
+        }finally {
+            entityManager.close();
         }
-        entityManager.close();
+
     }
 }

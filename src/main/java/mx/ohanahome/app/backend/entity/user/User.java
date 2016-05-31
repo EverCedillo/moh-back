@@ -37,7 +37,7 @@ public class User{
     private long id_user;
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name= "TOH_USER_HOME",
             joinColumns=@JoinColumn(name="id_user"),
@@ -55,9 +55,11 @@ public class User{
     @OneToMany(mappedBy="user",fetch = FetchType.EAGER)
     private Set<UserRole> userRoles;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<RegistrationRecord> records;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name="TOH_USER_INTOLERANCE",
             joinColumns=@JoinColumn(name="id_user"),
@@ -65,7 +67,7 @@ public class User{
     private Set<Intolerance> intolerances;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name="TOH_USER_ILLNESS",
             joinColumns=@JoinColumn(name="id_user"),
@@ -122,6 +124,14 @@ public class User{
         this.modification_date = user.modification_date==null?this.modification_date:user.modification_date;
 
         return this;
+    }
+
+    public Set<RegistrationRecord> getRecords() {
+        return records;
+    }
+
+    public void addRecord(RegistrationRecord record){
+        records.add(record);
     }
 
     public long getId_user() {
@@ -237,7 +247,7 @@ public class User{
     }
 
 
-    public void setBirthday(java.sql.Date birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
@@ -282,19 +292,31 @@ public class User{
         this.modification_date = modification_date;
     }
 
-    public void addHome(Home home){
-        homes.add(home);
-    }
+
     public User(){
 
     }
 
-    public void addUserRole(UserRole userRole){
-        userRoles.add(userRole);
+    public void addIntolerance(Intolerance intolerance){
+        intolerances.add(intolerance);
     }
+
+    public void addIllness(Illness illness){
+        illnesses.add(illness);
+    }
+
+
+
 
     @Override
     public boolean equals(Object obj) {
         return obj instanceof User && ((User)obj).getId_user()==this.getId_user();
     }
+
+    @JsonIgnore
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+
 }

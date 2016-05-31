@@ -1,41 +1,58 @@
 package mx.ohanahome.app.backend.entity.user;
 
-;import javax.persistence.Entity;
+;import com.google.appengine.repackaged.org.codehaus.jackson.annotate.JsonIgnore;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Table(name = "T_REG_RECORD")
+@Table(name = "TOH_REGISTRATION_DEVICE")
 @Entity
 public class RegistrationRecord {
 
     @GeneratedValue(generator = "increment")
     @Id
-    long id;
+    long id_token;
 
 
-    String regId;
 
-    public RegistrationRecord(long id, String regId) {
-        this.id = id;
-        this.regId = regId;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_user")
+    User user;
+
+
+    String token;
+
+
+    public long getId_token() {
+        return id_token;
     }
 
-    public long getId() {
-        return id;
+    public void setId_token(long id_token) {
+        this.id_token = id_token;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    @JsonIgnore
+    public User getUser() {
+        return user;
     }
 
-    public RegistrationRecord() {}
+    public RegistrationRecord(){}
 
-    public String getRegId() {
-        return regId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public void setRegId(String regId) {
-        this.regId = regId;
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

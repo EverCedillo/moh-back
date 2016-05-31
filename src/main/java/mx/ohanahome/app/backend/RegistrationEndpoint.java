@@ -17,8 +17,11 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import mx.ohanahome.app.backend.entity.user.Identify;
 import mx.ohanahome.app.backend.entity.user.RegistrationRecord;
-import mx.ohanahome.app.backend.util.DbConnection;
+import mx.ohanahome.app.backend.entity.user.User;
+import mx.ohanahome.app.backend.util.Constants;
+import mx.ohanahome.app.backend.util.EMFUser;
 
 
 /**
@@ -50,27 +53,38 @@ public class RegistrationEndpoint {
      * @param regId The Google Cloud Messaging registration Id to add
      */
     @ApiMethod(name = "register")
-    public void registerDevice(@Named("regId") String regId) {
-        DbConnection connection = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory("test_gae").createEntityManager();
+    public void registerDevice(@Named("regId") String regId, Identify identify) {
 
-        TypedQuery<RegistrationRecord> query = manager.createQuery("select t from RegistrationRecord t where regId='" + regId + "'", RegistrationRecord.class);
+        EntityManager manager = EMFUser.get().createEntityManager();
 
-        List<RegistrationRecord> records = query.getResultList();
-        RegistrationRecord record = records.isEmpty()?null:records.get(0);
-        //RegistrationRecord record = manager.(RegistrationRecord.class,regId);
-        if(record != null) {
-            log.info("Device " + regId + " already registered, skipping register");
-            return;
+        try {
+
+            TypedQuery<RegistrationRecord> query = manager.createQuery("select t from RegistrationRecord t where t.token='" + regId + "'", RegistrationRecord.class);
+
+            List<RegistrationRecord> records = query.getResultList();
+            RegistrationRecord record = records.isEmpty() ? null : records.get(0);
+            //RegistrationRecord record = manager.(RegistrationRecord.class,regId);
+            if (record != null) {
+                log.info("Device " + regId + " already registered, skipping register");
+                return;
+            }
+
+            manager.getTransaction().begin();
+            record = new RegistrationRecord();
+            record.setToken(regId);
+            identify = manager.find(Identify.class, identify.getId_identify());
+            User user = identify.getUser();
+
+            user.addRecord(record);
+            record.setUser(user);
+
+            manager.persist(record);
+            manager.persist(user);
+            manager.getTransaction().commit();
+        }finally {
+            manager.close();
         }
-        record = new RegistrationRecord();
-        record.setRegId(regId);
-        //todo save entity record
 
-        manager.getTransaction().begin();
-        manager.persist(record);
-        manager.getTransaction().commit();
-        manager.close();
     }
 
     /**
@@ -80,22 +94,27 @@ public class RegistrationEndpoint {
      */
     @ApiMethod(name = "unregister")
     public void unregisterDevice(@Named("regId") String regId) {
-        DbConnection connection = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory("test_gae").createEntityManager();
 
-        TypedQuery<RegistrationRecord> query = manager.createQuery("select t from RegistrationRecord t where regId='"+regId+"'",RegistrationRecord.class);
+        EntityManager manager = EMFUser.get().createEntityManager();
 
-        //RegistrationRecord record = query.getResultList().get(0); //manager.find(RegistrationRecord.class,regId);
-        List<RegistrationRecord> records = query.getResultList();
-        RegistrationRecord record = records.isEmpty()?null:records.get(0);
-        if(record == null) {
-            log.info("Device " + regId + " not registered, skipping unregister");
+        try {
+
+            TypedQuery<RegistrationRecord> query = manager.createQuery("select t from RegistrationRecord t where regId='" + regId + "'", RegistrationRecord.class);
+
+            //RegistrationRecord record = query.getResultList().get(0); //manager.find(RegistrationRecord.class,regId);
+            List<RegistrationRecord> records = query.getResultList();
+            RegistrationRecord record = records.isEmpty() ? null : records.get(0);
+            if (record == null) {
+                log.info("Device " + regId + " not registered, skipping unregister");
+                manager.close();
+                return;
+            }
+
+            manager.remove(record);
+        }finally {
             manager.close();
-            return;
         }
-        //todo delete entity record
-        manager.remove(record);
-        manager.close();
+
     }
 
     /**
@@ -106,13 +125,18 @@ public class RegistrationEndpoint {
      */
     @ApiMethod(name = "listDevices")
     public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count) {
-        DbConnection connection = new DbConnection();
-        EntityManager manager = connection.getEntityManagerFactory("test_gae").createEntityManager();
 
-        TypedQuery<RegistrationRecord> query = manager.createQuery("select t FROM RegistrationRecord t",RegistrationRecord.class);
+        EntityManager manager = EMFUser.get().createEntityManager();
+        List<RegistrationRecord> records;
+        try {
 
-        List<RegistrationRecord> records = query.getResultList(); //new ArrayList<>();//todo ofy().load().type(RegistrationRecord.class).limit(count).list();
-        manager.close();
+            TypedQuery<RegistrationRecord> query = manager.createQuery("select t FROM RegistrationRecord t", RegistrationRecord.class);
+
+            records = query.getResultList();
+        }finally {
+            manager.close();
+        }
+
         return CollectionResponse.<RegistrationRecord>builder().setItems(records).build();
     }
 
