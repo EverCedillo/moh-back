@@ -26,6 +26,7 @@ public class Scales {
     @JoinColumn(name="id_home")
     private Home home_scales;
 
+
     String aditional_information;
     String mac_address;
     String scales_name;

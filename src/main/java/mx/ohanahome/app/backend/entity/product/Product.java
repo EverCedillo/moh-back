@@ -37,18 +37,21 @@ public class Product {
     @OneToMany(mappedBy="product_prices")
     private Set<ProductPrice> product_prices ;
 
+    @ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
+    private Set<Order>orders;
+
     String product_name;
     int order_quantity;
     int category;
     int sub_category;
     int depto;
     int amount;
-    int unit;
+    String unit;
     String brand;
     int product_no;
 
     public Product(String product_name,int order_quantity,  int category, int sub_category,
-                   int depto, int amount,int unit, String brand, int product_no){
+                   int depto, int amount,String unit, String brand, int product_no){
 
         this.product_name = product_name;
         this.order_quantity = order_quantity;
@@ -117,11 +120,11 @@ public class Product {
         this.amount = amount;
     }
 
-    public int getUnit() {
+    public String getUnit() {
         return unit;
     }
 
-    public void setUnit(int unit) {
+    public void setUnit(String unit) {
         this.unit = unit;
     }
 

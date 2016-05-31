@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -33,13 +34,17 @@ public class Branch {
     String shipping_time;
 
 
-    public Branch(String branch_name, String telephone, double shipping_cost,
-                    String ship_mode, String address, String shipping_time){
+
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="id_shipment")
+    private Shipment shipment;
+
+    public Branch(String branch_name, String telephone, double shipping_cost
+                    , String address, String shipping_time){
 
         this.branch_name = branch_name;
         this.telephone = telephone;
         this.shipping_cost = shipping_cost;
-        this.ship_mode = ship_mode;
         this.address = address;
         this.shipping_time = shipping_time;
     }

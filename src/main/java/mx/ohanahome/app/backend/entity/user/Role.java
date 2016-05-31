@@ -82,4 +82,3 @@ public class Role {
         return obj instanceof Role && ((Role)obj).getId_role()==this.getId_role();
     }
 }
-

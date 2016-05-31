@@ -23,8 +23,6 @@ public class UserRole {
     private long id_user_role;
 
 
-
-
     @Temporal(TemporalType.TIMESTAMP)
     Date start_date;
     @Temporal(TemporalType.TIMESTAMP)
