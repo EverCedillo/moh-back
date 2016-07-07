@@ -24,7 +24,7 @@ public class CustomerHome {
 
     
     @Temporal(TemporalType.TIMESTAMP)
-    Date creation_date = new Date();
+    Date creation_date;
 
     private long id_user;
     private long id_customer;

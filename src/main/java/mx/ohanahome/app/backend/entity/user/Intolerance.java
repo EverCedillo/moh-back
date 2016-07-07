@@ -27,6 +27,7 @@ public class Intolerance {
     private Set<User> users;
 
 
+    String intolerance_type;
     String intolerance_name;
 
     public Intolerance(String intolerance_name){
@@ -58,6 +59,10 @@ public class Intolerance {
     public Intolerance(String intolerance_name, long id_intolerance) {
         this.intolerance_name = intolerance_name;
         this.id_intolerance = id_intolerance;
+    }
+
+    public String getIntolerance_type() {
+        return intolerance_type;
     }
 
     @Override

@@ -63,7 +63,7 @@ public class User{
     @JoinTable(
             name="TOH_USER_INTOLERANCE",
             joinColumns=@JoinColumn(name="id_user"),
-            inverseJoinColumns=@JoinColumn(name="id_user_intolerance"))
+            inverseJoinColumns=@JoinColumn(name="id_intolerance"))
     private Set<Intolerance> intolerances;
 
 
@@ -301,11 +301,13 @@ public class User{
         intolerances.add(intolerance);
     }
 
+    public void deleteIntolerance(Intolerance intolerance){intolerances.remove(intolerance);}
+
     public void addIllness(Illness illness){
         illnesses.add(illness);
     }
 
-
+    public void deleteIllness(Illness illness){illnesses.remove(illness);}
 
 
     @Override

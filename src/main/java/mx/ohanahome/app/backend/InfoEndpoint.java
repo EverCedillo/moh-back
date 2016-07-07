@@ -12,9 +12,14 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import mx.ohanahome.app.backend.entity.user.Identify;
 import mx.ohanahome.app.backend.entity.user.Illness;
 import mx.ohanahome.app.backend.entity.user.Intolerance;
+import mx.ohanahome.app.backend.entity.user.User;
+import mx.ohanahome.app.backend.model.AddInfoPackage;
+import mx.ohanahome.app.backend.util.Constants;
 import mx.ohanahome.app.backend.util.EMFUser;
+import mx.ohanahome.app.backend.util.MOHException;
 
 /**
  * An endpoint class we are exposing
@@ -22,7 +27,7 @@ import mx.ohanahome.app.backend.util.EMFUser;
 @Api(
         name = "infoApi",
         version = "v1",
-        resource = "intolerance",
+        resource = "info",
         namespace = @ApiNamespace(
                 ownerDomain = "backend.app.ohanahome.mx",
                 ownerName = "backend.app.ohanahome.mx",
@@ -71,5 +76,123 @@ public class InfoEndpoint {
         List<Illness> list = query.getResultList();
 
         return CollectionResponse.<Illness>builder().setItems(list).build();
+    }
+
+    @ApiMethod(path = "me/info" , httpMethod = ApiMethod.HttpMethod.POST)
+    public void deleteInfo(AddInfoPackage infoPackage) throws MOHException{
+        EntityManager userManager = EMFUser.get().createEntityManager();
+        Status status;
+
+        try {
+            status = verifyIdentity(infoPackage.getIdentify(), userManager);
+            if (status != Status.OK) throw new MOHException(status.getMessage(), status.getCode());
+            Identify identify = (Identify) status.getResponse();
+
+            userManager.getTransaction().begin();
+
+            User user = identify.getUser();
+
+            if(infoPackage.getIllness()!=null){
+                Illness illness = userManager.find(Illness.class,infoPackage.getIllness().getId_illness());
+                user.deleteIllness(illness);
+            }
+            if(infoPackage.getIntolerance()!=null){
+                Intolerance intolerance = userManager.find(Intolerance.class,infoPackage.getIntolerance().getId_intolerance());
+                user.deleteIntolerance(intolerance);
+            }
+            userManager.persist(user);
+
+            userManager.getTransaction().commit();
+        }finally {
+            userManager.close();
+        }
+    }
+
+    @ApiMethod(path = "me/info" , httpMethod = ApiMethod.HttpMethod.PUT)
+    public void addInfo(AddInfoPackage infoPackage) throws MOHException{
+        EntityManager userManager = EMFUser.get().createEntityManager();
+        Status status;
+
+        try {
+            status = verifyIdentity(infoPackage.getIdentify(), userManager);
+            if (status != Status.OK) throw new MOHException(status.getMessage(), status.getCode());
+            Identify identify = (Identify) status.getResponse();
+
+            userManager.getTransaction().begin();
+
+            User user = identify.getUser();
+            if (infoPackage.getIllness() != null) {
+                Illness illness = userManager.find(Illness.class, infoPackage.getIllness().getId_illness());
+                user.addIllness(illness);
+            }
+            if (infoPackage.getIntolerance() != null) {
+                Intolerance intolerance = userManager.find(Intolerance.class, infoPackage.getIntolerance().getId_intolerance());
+                user.addIntolerance(intolerance);
+            }
+
+            userManager.persist(user);
+
+            userManager.getTransaction().commit();
+        }finally {
+            userManager.close();
+        }
+
+    }
+    /*
+    @ApiMethod(name = "linkIllness", path = "user/illness")
+    public Illness linkIllness(AddInfoPackage infoPackage) t{
+        EntityManager userManager = EMFUser.get().createEntityManager();
+        Status status;
+        status=verifyIdentity(infoPackage.getIdentify(), userManager);
+        if(status!=Status.OK) throw new MOHException(status.getMessage(),status.getCode());
+    }
+
+*/
+    private Status verifyIdentity(Identify identify, EntityManager manager){
+
+        TypedQuery<Identify> query = manager.createNamedQuery("Identify.verifyIdentity", Identify.class);
+
+
+        query.setParameter(Constants.CIdentity.ID_ADAPTER,identify.getId_adapter());
+        query.setParameter(Constants.CIdentity.ADAPTER, identify.getAdapter());
+
+        List<Identify> ids = query.getResultList();
+
+        Identify ident = ids.isEmpty()?null:ids.get(0);
+        if(ident!=null) return Status.OK.withResponse(ident);
+        else return Status.AUTH_ERROR;
+    }
+    enum Status{
+        HOME_NOT_FOUND(MOHException.STATUS_OBJECT_NOT_FOUND,"Home not found"),
+        HOME_NOT_ACCESSIBLE(MOHException.STATUS_OBJECT_NOT_ACCESSIBLE,"Can not update or retrieve the object"),
+        NOT_ENOUGH_DATA(MOHException.STATUS_NOT_ENOUGH_DATA,"Missing fields"),
+        AUTH_ERROR(MOHException.STATUS_AUTH_ERROR,"Auth error"),
+        OK(-1,"Status OK");
+
+        private int code;
+        private String message;
+        private Object response;
+
+
+        Status(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public int getCode() {
+            return code;
+        }
+        public Status withResponse(Object response){
+            this.response= response;
+            return this;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public Object getResponse() {
+            return response;
+        }
     }
 }

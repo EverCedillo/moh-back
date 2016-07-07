@@ -59,12 +59,10 @@ public class PaymentStatus {
     }
 
     public Order getPayment_status() {
-        return payment_status
+        return payment_status;
     }
 
-    public void setPayment_status(Order order_status) {
-        this.order_status = order_status;
-    }
+
 
     public String getStatus_name() {
         return status_name;

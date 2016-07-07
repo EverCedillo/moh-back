@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
@@ -25,6 +26,7 @@ import mx.ohanahome.app.backend.entity.user.UserRole;
 import mx.ohanahome.app.backend.model.HomePackage;
 import mx.ohanahome.app.backend.util.Constants;
 import mx.ohanahome.app.backend.util.EMFInvitation;
+import mx.ohanahome.app.backend.util.EMFProduct;
 import mx.ohanahome.app.backend.util.EMFUser;
 import mx.ohanahome.app.backend.util.MOHException;
 
@@ -155,6 +157,8 @@ public class HomeEndpoint {
         Home home=null;
         EntityManager manager = EMFUser.get().createEntityManager();
         EntityManager invitationManager = EMFInvitation.get().createEntityManager();
+        EntityManager productManager = EMFProduct.get().createEntityManager();
+
 
         try {
 
@@ -209,16 +213,34 @@ public class HomeEndpoint {
 
             manager.flush();
             EntityTransaction transaction1 = invitationManager.getTransaction();
+            EntityTransaction transaction2 = productManager.getTransaction();
             try {
                 transaction1.begin();
                 mx.ohanahome.app.backend.entity.invitation.Home home1 = new mx.ohanahome.app.backend.entity.invitation.Home(home);
                 invitationManager.persist(home1);
+
+                try {
+                    transaction2.begin();
+                    mx.ohanahome.app.backend.entity.product.Home home2 = new mx.ohanahome.app.backend.entity.product.Home(home);
+                    productManager.persist(home2);
+                    transaction2.commit();
+                }catch (Exception e){
+                    logger.log(Level.WARNING,"2:"+e.getMessage(),e.getCause());
+                    transaction1.setRollbackOnly();
+                    transaction.setRollbackOnly();
+                    if(transaction2.isActive())
+                        transaction2.rollback();
+                }
+
                 transaction1.commit();
-            } catch (Exception e) {
+            }catch (Exception e){
                 e.printStackTrace();
+
+                logger.log(Level.WARNING,"1:"+e.getMessage(),e.getCause());
                 transaction.setRollbackOnly();
-                if (transaction1.isActive())
+                if(transaction1.isActive())
                     transaction1.rollback();
+
             }
 
             transaction.commit();
@@ -229,6 +251,7 @@ public class HomeEndpoint {
                 invitationManager.getTransaction().rollback();
             manager.close();
             invitationManager.close();
+            productManager.close();
         }
 
         return home;
@@ -240,6 +263,7 @@ public class HomeEndpoint {
         Home home;
         EntityManager manager = EMFUser.get().createEntityManager();
         EntityManager invitationManager = EMFInvitation.get().createEntityManager();
+        EntityManager productManager = EMFProduct.get().createEntityManager();
 
         try {
             Identify identify = homePackage.getIdentify();
@@ -280,6 +304,19 @@ public class HomeEndpoint {
                 transaction.setRollbackOnly();
                 if (transaction1.isActive())
                     transaction1.rollback();
+            }
+
+            EntityTransaction transaction2 = productManager.getTransaction();
+            try{
+                transaction2.begin();
+                mx.ohanahome.app.backend.entity.product.Home home2 = new mx.ohanahome.app.backend.entity.product.Home(home);
+                productManager.persist(home2);
+                transaction2.commit();
+            }catch (Exception e){
+                e.printStackTrace();
+                transaction.setRollbackOnly();
+                if(transaction2.isActive())
+                    transaction2.rollback();
             }
 
             transaction.commit();

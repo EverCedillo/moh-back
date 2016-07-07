@@ -29,9 +29,6 @@ public class Payment {
     @JoinColumn(name="id_shipment")
     private Shipment shipment_payment;
 
-    @OneToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="id_customer")
-
     @ManyToOne(fetch= FetchType.EAGER)
     @JoinColumn(name="id_customer")
     private Customer customer_payment;

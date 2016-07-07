@@ -2,7 +2,6 @@ package mx.ohanahome.app.backend.entity.user;
 
 
 
-import com.google.appengine.repackaged.org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -265,6 +264,8 @@ public class Home {
     public boolean equals(Object obj) {
         return obj instanceof Home && ((Home) obj).getId_home() == this.getId_home();
     }
+
+
 
     public Set<UserRole> getUserRoles() {
         return userRoles;

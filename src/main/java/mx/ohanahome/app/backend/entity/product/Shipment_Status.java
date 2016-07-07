@@ -30,8 +30,7 @@ public class Shipment_Status {
 
 
     @Temporal(TemporalType.TIMESTAMP)
-    Date shipment_date = new Date();
-
+    Date shipment_date;
 
     String status_name;
 

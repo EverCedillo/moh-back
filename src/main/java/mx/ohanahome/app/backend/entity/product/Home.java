@@ -11,13 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-/**
- * Created by brenda on 5/1/16.
- */
+
+
+
 @Table(name = "TOH_HOME")
 @Entity
 public class Home {
@@ -38,6 +39,8 @@ public class Home {
     Double longitude;
     Double latitude;
     String aditional_information;
+
+
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
     @Temporal(TemporalType.TIMESTAMP)
@@ -48,6 +51,9 @@ public class Home {
 
     @OneToMany(mappedBy="home_shipment",fetch = FetchType.EAGER)
     private Set<Shipment> shipments;
+
+    @ManyToMany(mappedBy= "homes",fetch = FetchType.EAGER)
+    private Set<Customer>customers;
 
 
     public Home(String home_name, String url, String telephone, long creator_id,
@@ -66,6 +72,25 @@ public class Home {
         this.longitude=longitude;
         this.latitude=latitude;
 
+    }
+
+    public Home(mx.ohanahome.app.backend.entity.user.Home home){
+        this.id_home=home.getId_home();
+        this.home_name=home.getHome_name()==null?home_name:home.getHome_name();
+        this.url=home.getUrl()==null?url:home.getUrl();
+        this.telephone=home.getTelephone()==null?telephone:home.getTelephone();
+        this.creator_id=home.getCreator_id()==null ?creator_id:home.getCreator_id();
+        this.street=home.getStreet()==null?street:home.getStreet();
+        this.neighborhood=home.getNeighborhood()==null?neighborhood:home.getNeighborhood();
+        this.interior_number=home.getInterior_number()==null?interior_number:home.getInterior_number();
+        this.exterior_number=home.getExterior_number()==null?exterior_number:home.getExterior_number();
+        this.postal_code=home.getPostal_code()==null? postal_code:home.getPostal_code();
+        this.deleg_municip=home.getDeleg_municip()==null?deleg_municip:home.getDeleg_municip();
+        this.longitude=home.getLongitude()==null?longitude:home.getLongitude();
+        this.latitude=home.getLatitude()== null?latitude:home.getLatitude();
+        this.aditional_information =home.getAditional_information()==null?aditional_information :home.getAditional_information();
+        this.creation_date=home.getCreation_date();
+        this.modification_date=home.getModification_date();
     }
 
     public void setCreator_id(Long creator_id) {
@@ -230,6 +255,7 @@ public class Home {
         return this;
     }
 
+    public Home(){}
 
     @Override
     public boolean equals(Object obj) {

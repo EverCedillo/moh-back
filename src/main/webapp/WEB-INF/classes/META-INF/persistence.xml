@@ -43,9 +43,19 @@
         </properties>
     </persistence-unit>
     <persistence-unit name="product">
+        <class>mx.ohanahome.app.backend.entity.product.Branch</class>
+        <class>mx.ohanahome.app.backend.entity.product.Customer</class>
+        <class>mx.ohanahome.app.backend.entity.product.CustomerHome</class>
+        <class>mx.ohanahome.app.backend.entity.product.Home</class>
+        <class>mx.ohanahome.app.backend.entity.product.Order</class>
+        <class>mx.ohanahome.app.backend.entity.product.OrderProduct</class>
+        <class>mx.ohanahome.app.backend.entity.product.OrderStatus</class>
+        <class>mx.ohanahome.app.backend.entity.product.Payment</class>
+        <class>mx.ohanahome.app.backend.entity.product.PaymentStatus</class>
         <class>mx.ohanahome.app.backend.entity.product.Product</class>
         <class>mx.ohanahome.app.backend.entity.product.ProductPrice</class>
-        <class>mx.ohanahome.app.backend.entity.product.Branch</class>
+        <class>mx.ohanahome.app.backend.entity.product.Shipment</class>
+        <class>mx.ohanahome.app.backend.entity.product.Shipment_Status</class>
         <class>mx.ohanahome.app.backend.entity.product.Store</class>
         <class>mx.ohanahome.app.backend.entity.product.StoreProduct</class>
         <exclude-unlisted-classes/>

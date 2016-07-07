@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -30,14 +31,19 @@ public class Order {
     @Id
     @Column(name="id_order")
     private  long id_order;
-    private long id_customer;
+
+
+    @ManyToOne(fetch= FetchType.EAGER)
+    @JoinColumn(name="id_home")
+    private Home home_order;
+
+
+    String order_name;
 
     @Temporal(TemporalType.TIMESTAMP)
     Date creation_date;
 
-    @OneToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="id_customer")
-    private Customer customer;
+
 
     /*
     @OneToMany(mappedBy="shipment_order", fetch = FetchType.EAGER)
@@ -49,7 +55,7 @@ public class Order {
 
 
     @OneToMany(mappedBy="order",fetch = FetchType.EAGER)
-    private Set<CustomerOrder> customerOrders;
+    private Set<CustomerHome> customerOrders;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -59,12 +65,9 @@ public class Order {
             inverseJoinColumns=@JoinColumn(name="product"))
     private Set<Product> products;
 
-    @ManyToOne(fetch= FetchType.EAGER)
-    @JoinColumn(name="id_home")
-    private Home home_order;
 
 
-    String order_name;
+
 
     public Order(String order_name){
         this.order_name = order_name;

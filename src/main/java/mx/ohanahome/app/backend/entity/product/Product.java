@@ -48,32 +48,21 @@ public class Product {
     private Set<Order>orders;
 
     String product_name;
-<<<<<<< HEAD
-    int order_quantity;
-    int category;
-    int sub_category;
-    int depto;
-    int amount;
-    String unit;
-=======
+
     Integer order_quantity;
     Integer category;
     Integer sub_category;
     Integer depto;
     Integer amount;
     String  unit;
->>>>>>> 0b87eabef31d448cc56d4910f62d760fda1dd3c3
     String brand;
     Integer product_no;
     String image;
 
-<<<<<<< HEAD
-    public Product(String product_name,int order_quantity,  int category, int sub_category,
-                   int depto, int amount,String unit, String brand, int product_no){
-=======
+
     public Product(String product_name,Integer order_quantity,  Integer category, Integer sub_category,
                    Integer depto, Integer amount,String  unit, String brand, Integer product_no, String image){
->>>>>>> 0b87eabef31d448cc56d4910f62d760fda1dd3c3
+
 
         this.product_name = product_name;
         this.order_quantity = order_quantity;
@@ -148,19 +137,13 @@ public class Product {
         this.amount = amount;
     }
 
-<<<<<<< HEAD
+
     public String getUnit() {
         return unit;
     }
 
     public void setUnit(String unit) {
-=======
-    public String  getUnit() {
-        return unit;
-    }
 
-    public void setUnit(String  unit) {
->>>>>>> 0b87eabef31d448cc56d4910f62d760fda1dd3c3
         this.unit = unit;
     }
 

@@ -29,7 +29,7 @@ public class Customer {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
-            name= "TOH_USER_HOME",
+            name= "TOH_CUSTOMER_HOME",
             joinColumns=@JoinColumn(name="id_user"),
             inverseJoinColumns=@JoinColumn(name="id_home"))
     private Set<Home> homes;
