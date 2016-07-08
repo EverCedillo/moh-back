@@ -27,6 +27,7 @@ public class Shipment {
     @GeneratedValue(generator = "increment")
     @Id
     @Column(name = "id_shipment")
+    private long id_shipment;
 
     @Temporal(TemporalType.TIMESTAMP)
     Date shipment_date;
@@ -59,7 +60,7 @@ public class Shipment {
 
 
     String shipment_details;
-    private long id_shipment;
+
     private long id_order;
 
 

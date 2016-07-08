@@ -46,11 +46,11 @@ public class Home {
     @Temporal(TemporalType.TIMESTAMP)
     Date modification_date;
 
-    @OneToMany(mappedBy="home_order",fetch = FetchType.EAGER)
-    private Set<Order>orders ;
+    //@OneToMany(mappedBy="home_order",fetch = FetchType.EAGER)
+    //private Set<Order>orders ;
 
-    @OneToMany(mappedBy="home_shipment",fetch = FetchType.EAGER)
-    private Set<Shipment> shipments;
+    //@OneToMany(mappedBy="home_shipment",fetch = FetchType.EAGER)
+    //private Set<Shipment> shipments;
 
     @ManyToMany(mappedBy= "homes",fetch = FetchType.EAGER)
     private Set<Customer>customers;

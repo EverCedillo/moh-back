@@ -293,36 +293,42 @@ public class HomeEndpoint {
             manager.persist(home);
 
             EntityTransaction transaction1 = invitationManager.getTransaction();
+            EntityTransaction transaction2 = productManager.getTransaction();
             manager.flush();
             try {
                 transaction1.begin();
                 mx.ohanahome.app.backend.entity.invitation.Home home1 = new mx.ohanahome.app.backend.entity.invitation.Home(home);
                 invitationManager.persist(home1);
-                transaction1.commit();
-            } catch (Exception e) {
-                e.printStackTrace();
-                transaction.setRollbackOnly();
-                if (transaction1.isActive())
-                    transaction1.rollback();
-            }
 
-            EntityTransaction transaction2 = productManager.getTransaction();
-            try{
-                transaction2.begin();
-                mx.ohanahome.app.backend.entity.product.Home home2 = new mx.ohanahome.app.backend.entity.product.Home(home);
-                productManager.persist(home2);
-                transaction2.commit();
+                try {
+                    transaction2.begin();
+                    mx.ohanahome.app.backend.entity.product.Home home2 = new mx.ohanahome.app.backend.entity.product.Home(home);
+                    productManager.persist(home2);
+                    transaction2.commit();
+                }catch (Exception e){
+                    logger.log(Level.WARNING,"2:"+e.getMessage(),e.getCause());
+                    transaction1.setRollbackOnly();
+                    transaction.setRollbackOnly();
+                    if(transaction2.isActive())
+                        transaction2.rollback();
+                }
+
+                transaction1.commit();
             }catch (Exception e){
                 e.printStackTrace();
+
+                logger.log(Level.WARNING, "1:" + e.getMessage(), e.getCause());
                 transaction.setRollbackOnly();
-                if(transaction2.isActive())
-                    transaction2.rollback();
+                if(transaction1.isActive())
+                    transaction1.rollback();
+
             }
 
             transaction.commit();
         }finally {
             manager.close();
             invitationManager.close();
+            productManager.close();
         }
 
         return home;

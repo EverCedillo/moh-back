@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import mx.ohanahome.app.backend.entity.user.User;
+
 /**
  * Created by brenda on 5/1/16.
  */
@@ -27,13 +29,14 @@ public class Customer {
     @Id
     private long id_customer;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name= "TOH_CUSTOMER_HOME",
             joinColumns=@JoinColumn(name="id_user"),
             inverseJoinColumns=@JoinColumn(name="id_home"))
     private Set<Home> homes;
 
+    /*
     @OneToMany(mappedBy=" customer_product")
     private Set<OrderProduct> orderProducts ;
 
@@ -71,6 +74,23 @@ public class Customer {
         this.picture = picture;
         this.birthday = birthday;
         this.email=email;
+    }
+
+    public Customer(User user){
+        this.id_customer = user.getId_user();
+        this.user_name = user.getUser_name()==null?this.user_name:user.getUser_name();
+        this.last_name = user.getLast_name()==null?this.last_name:user.getLast_name();
+        this.gender = user.getGender()==null?this.gender:user.getGender();
+        this.picture = user.getPicture()==null?this.picture:user.getPicture();
+        this.mobile_phone = user.getMobile_phone()==null?this.mobile_phone:user.getMobile_phone();
+        this.birthday = user.getBirthday()==null?this.birthday:user.getBirthday();
+        this.email = user.getEmail()==null?this.email:user.getEmail();
+        this.height = user.getHeight()==null?this.height:user.getHeight();
+        this.weight = user.getWeight()==null?this.weight:user.getWeight();
+        this.pin = user.getPin()==null?this.pin:user.getPin();
+        this.pattern = user.getPattern()==null?this.pattern:user.getPattern();
+        this.creation_date = user.getCreation_date()==null?this.creation_date:user.getCreation_date();
+        this.modification_date = user.getModification_date()==null?this.modification_date:user.getModification_date();
     }
 
     public long getId_customer() {

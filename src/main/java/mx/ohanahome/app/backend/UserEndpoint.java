@@ -6,11 +6,14 @@ import com.google.api.server.spi.config.ApiNamespace;
 //import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
+import mx.ohanahome.app.backend.entity.product.Customer;
 import mx.ohanahome.app.backend.entity.user.Identify;
 import mx.ohanahome.app.backend.entity.user.Illness;
 import mx.ohanahome.app.backend.entity.user.Intolerance;
@@ -18,6 +21,7 @@ import mx.ohanahome.app.backend.entity.user.User;
 import mx.ohanahome.app.backend.model.AddInfoPackage;
 import mx.ohanahome.app.backend.model.LoginPackage;
 import mx.ohanahome.app.backend.util.Constants;
+import mx.ohanahome.app.backend.util.EMFProduct;
 import mx.ohanahome.app.backend.util.EMFUser;
 import mx.ohanahome.app.backend.util.MOHException;
 
@@ -95,8 +99,11 @@ public class UserEndpoint {
     public User updateUser (LoginPackage loginPackage)throws MOHException{
 
         EntityManager manager = EMFUser.get().createEntityManager();
+        EntityManager productManager = EMFProduct.get().createEntityManager();
         Status status;
         User user;
+
+        EntityTransaction transaction = manager.getTransaction();
         try {
 
             status = validateFields(loginPackage, UPDATE_USER);
@@ -108,12 +115,25 @@ public class UserEndpoint {
             Identify identify = (Identify) status.getResponse();
 
             user = identify.getUser();
-            manager.getTransaction().begin();
+            transaction.begin();
             user.mergeValues(loginPackage.getUser());
             user.setModification_date(new java.util.Date());
 
             manager.persist(user);
-            manager.getTransaction().commit();
+
+            EntityTransaction transaction1 = productManager.getTransaction();
+            try{
+                transaction1.begin();
+                productManager.persist(new Customer(user));
+                transaction1.commit();
+            }catch (Exception e){
+                logger.log(Level.WARNING, "1:" + e.getMessage(), e.getCause());
+                transaction.setRollbackOnly();
+                if(transaction1.isActive())
+                    transaction1.rollback();
+            }
+
+            transaction.commit();
         }finally {
             manager.close();
         }
@@ -134,6 +154,10 @@ public class UserEndpoint {
         Status status;
         Identify identify = loginPackage.getIdentify();
         EntityManager manager =EMFUser.get().createEntityManager();
+        EntityManager productManager = EMFProduct.get().createEntityManager();
+
+        EntityTransaction transaction = manager.getTransaction();
+        EntityTransaction transaction1 = productManager.getTransaction();
 
         try {
             status = validateFields(loginPackage, INSERT_USER);
@@ -154,7 +178,7 @@ public class UserEndpoint {
                 throw new MOHException("User with email " + user.getEmail() + " already exists", MOHException.STATUS_OBJECT_NOT_ACCESSIBLE);
 
 
-            manager.getTransaction().begin();
+            transaction.begin();
 
             user.setCreation_date(new java.util.Date());
             user.setModification_date(new java.util.Date());
@@ -172,10 +196,27 @@ public class UserEndpoint {
             user.setPicture(String.format(Constants.CUser.DEFAULT_PICTURE_PATH, String.valueOf(user.getId_user())));
             manager.persist(user);
 
-            manager.getTransaction().commit();
+            try{
+                transaction1.begin();
+                productManager.persist(new Customer(user));
+                transaction1.commit();
+            }catch (Exception e){
+                logger.log(Level.WARNING, "1:" + e.getMessage(), e.getCause());
+                transaction.setRollbackOnly();
+                if(transaction1.isActive())
+                    transaction1.rollback();
+            }
+
+            transaction.commit();
 
         }finally {
+            if(transaction.isActive())
+                transaction.rollback();
+            if(transaction1.isActive())
+                transaction1.rollback();
             manager.close();
+            productManager.close();
+
         }
 
 

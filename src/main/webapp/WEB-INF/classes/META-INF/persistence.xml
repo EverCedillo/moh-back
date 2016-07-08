@@ -45,7 +45,6 @@
     <persistence-unit name="product">
         <class>mx.ohanahome.app.backend.entity.product.Branch</class>
         <class>mx.ohanahome.app.backend.entity.product.Customer</class>
-        <class>mx.ohanahome.app.backend.entity.product.CustomerHome</class>
         <class>mx.ohanahome.app.backend.entity.product.Home</class>
         <class>mx.ohanahome.app.backend.entity.product.Order</class>
         <class>mx.ohanahome.app.backend.entity.product.OrderProduct</class>

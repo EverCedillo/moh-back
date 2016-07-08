@@ -1,7 +1,5 @@
 package mx.ohanahome.app.backend.entity.product;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -9,17 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import mx.ohanahome.app.backend.entity.user.User;
 
 /**
  * Created by brenda on 4/27/16.
@@ -38,14 +30,14 @@ public class Product {
     @Column(name = "id_product")
     private long id_product;
 
-    @ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
+    /*@ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
     private Set<Store> stores;
 
     @OneToMany(mappedBy="products")
     private Set<ProductPrice> product_prices ;
 
-    @ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
-    private Set<Order>orders;
+    //@ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
+    //private Set<Order>orders;*/
 
     String product_name;
 
@@ -171,12 +163,13 @@ public class Product {
         this.image = image;
     }
 
+    /*
     public Set<Store> getStores() {
         return stores;
     }
 
     public Set<ProductPrice> getProduct_prices() {
         return product_prices;
-    }
+    }*/
 }
 
