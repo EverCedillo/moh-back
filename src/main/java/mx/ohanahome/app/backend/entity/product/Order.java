@@ -1,5 +1,6 @@
 package mx.ohanahome.app.backend.entity.product;
 
+import java.util.List;
 import java.util.Set;
 import java.util.Date;
 
@@ -66,6 +67,9 @@ public class Order {
     private Set<Product> products;
 
 
+    @OneToMany(mappedBy="order",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<OrderProduct> orderProducts;
+
 
 
 
@@ -97,5 +101,17 @@ public class Order {
 
     public void setOrder_name(String order_name) {
         this.order_name = order_name;
+    }
+
+    public Set<OrderProduct> getOrderProducts() {
+        return orderProducts;
+    }
+
+    public void addOrderProduct(List<OrderProduct> products){
+        orderProducts.addAll(products);
+    }
+
+    public void setOrderProducts(Set<OrderProduct> orderProducts) {
+        this.orderProducts = orderProducts;
     }
 }

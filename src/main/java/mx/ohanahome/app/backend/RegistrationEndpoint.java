@@ -20,8 +20,10 @@ import javax.persistence.TypedQuery;
 import mx.ohanahome.app.backend.entity.user.Identify;
 import mx.ohanahome.app.backend.entity.user.RegistrationRecord;
 import mx.ohanahome.app.backend.entity.user.User;
+import mx.ohanahome.app.backend.model.LoginPackage;
 import mx.ohanahome.app.backend.util.Constants;
 import mx.ohanahome.app.backend.util.EMFUser;
+import mx.ohanahome.app.backend.util.MOHException;
 
 
 /**
@@ -53,7 +55,7 @@ public class RegistrationEndpoint {
      * @param regId The Google Cloud Messaging registration Id to add
      */
     @ApiMethod(name = "register")
-    public void registerDevice(@Named("regId") String regId, Identify identify) {
+    public void registerDevice(@Named("regId") String regId, LoginPackage loginPackage) {
 
         EntityManager manager = EMFUser.get().createEntityManager();
 
@@ -68,6 +70,13 @@ public class RegistrationEndpoint {
                 log.info("Device " + regId + " already registered, skipping register");
                 return;
             }
+
+            Status status;
+            Identify identify = loginPackage.getIdentify();
+            status= verifyIdentity(identify,manager);
+            if(status==Status.OK)
+                return;
+            identify = (Identify) status.getResponse();
 
             manager.getTransaction().begin();
             record = new RegistrationRecord();
@@ -138,6 +147,57 @@ public class RegistrationEndpoint {
         }
 
         return CollectionResponse.<RegistrationRecord>builder().setItems(records).build();
+    }
+
+    private Status verifyIdentity(Identify identify, EntityManager manager){
+
+        TypedQuery<Identify> query = manager.createNamedQuery("Identify.verifyIdentity", Identify.class);
+
+        query.setParameter(Constants.CIdentity.ID_ADAPTER,identify.getId_adapter());
+        query.setParameter(Constants.CIdentity.ADAPTER,identify.getAdapter());
+        List<Identify> ids = query.getResultList();
+        Identify ident = ids.isEmpty()?null:ids.get(0);
+        if(ident!=null) return Status.USER_ALREADY_EXISTS.withResponse(ident);
+        else return Status.OK;
+    }
+
+    enum Status{
+        WRONG_USER(MOHException.STATUS_OBJECT_NOT_FOUND,"User not found"),
+        USER_ALREADY_EXISTS(MOHException.STATUS_OBJECT_NOT_ACCESSIBLE,"User already exists"),
+        NOT_ENOUGH_DATA(MOHException.STATUS_NOT_ENOUGH_DATA,"Missing fields"),
+        OK(3,"Status OK");
+
+        private int code;
+        private String message;
+        private Object response;
+
+
+        Status(int code, String message, Object response) {
+            this.code = code;
+            this.message = message;
+            this.response = response;
+        }
+
+        Status(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public int getCode() {
+            return code;
+        }
+        public Status withResponse(Object response){
+            this.response= response;
+            return this;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public Object getResponse() {
+            return response;
+        }
     }
 
 

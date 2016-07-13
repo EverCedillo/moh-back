@@ -13,7 +13,8 @@
                 mx.ohanahome.app.backend.StoreEndpoint,
                 mx.ohanahome.app.backend.InvitationEndpoint,
                 mx.ohanahome.app.backend.ProductEndpoint,
-                mx.ohanahome.app.backend.InfoEndpoint</param-value>
+                mx.ohanahome.app.backend.InfoEndpoint,
+                mx.ohanahome.app.backend.OrderEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

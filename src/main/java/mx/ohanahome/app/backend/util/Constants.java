@@ -28,6 +28,8 @@ public class Constants {
 
         public static final String EMAIL = "email";
 
+        public static final String ID_USER = "user";
+
         public static final String DEFAULT_PICTURE_PATH = "http://www.ohanahome.mx/profile/images/%1$s.png";
     }
     public static class CIdentity{
@@ -50,7 +52,7 @@ public class Constants {
 
         public static final String JOIN_HOME_MSSG = "%1$s se ha unido a tu hogar";
 
-        public static final String INVITATON_LINK = "http://www.ohanahome.mx/invite/?iid=%1$s";
+        public static final String INVITATION_LINK = "http://www.ohanahome.mx/invite/?iid=%1$s";
 
         public static final String INVITATION_MAIL = "Haz sido invitado a unirte al hogar %1$s en Ohana Home" +
                 "<p> %2$s (%3$s) te ha invitado </p>" +
@@ -63,6 +65,7 @@ public class Constants {
     public static class CMessaging{
         public static final String INVITATION_TOPIC = "invite";
         public static final String JOIN_HOME_TOPIC = "join_home";
+        public static final String ORDER_INVITATION_TOPIC = "order_invite";
     }
 
     public static class CPermission{
@@ -92,6 +95,10 @@ public class Constants {
     public static class CUserRole{
         public static final String HOME = "home";
         public static final String USER = "user";
+    }
+
+    public static class COrder{
+        public static final String ORDER_INVITATION_MSG = "%1$s te ha invitado a una compra";
     }
 
 }

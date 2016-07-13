@@ -16,7 +16,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,7 +27,9 @@ import javax.persistence.TemporalType;
 /**
  * Created by brenda on 4/3/16.
  */
-
+@NamedQueries(
+        @NamedQuery(name="Home.findHomesByUser",query = "Select h from Home h where")
+)
 @Table(name = "TOH_HOME")
 @Entity
 public class Home {
@@ -40,7 +45,7 @@ public class Home {
     private Set<UserRole> userRoles;
 
 
-    @ManyToMany(mappedBy= "homes",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy= "homes",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<User>users;
 
     @ManyToMany
@@ -117,7 +122,7 @@ public class Home {
 
 
 
-    public void setId_home(long id_home) {
+    public void setId_home(Long id_home) {
         this.id_home = id_home;
     }
 
@@ -259,6 +264,7 @@ public class Home {
         userRoles.add(userRole);
     }
 
+
     public Home(){}
     @Override
     public boolean equals(Object obj) {
@@ -266,6 +272,23 @@ public class Home {
     }
 
 
+
+
+    public void setScales(Set<Scales> scales) {
+        this.scales = scales;
+    }
+
+    public void setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public void setStores(Set<Store> stores) {
+        this.stores = stores;
+    }
 
     public Set<UserRole> getUserRoles() {
         return userRoles;

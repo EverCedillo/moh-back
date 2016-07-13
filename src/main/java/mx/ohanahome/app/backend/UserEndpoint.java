@@ -3,22 +3,29 @@ package mx.ohanahome.app.backend;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.api.server.spi.response.CollectionResponse;
 //import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.xml.transform.OutputKeys;
 
 import mx.ohanahome.app.backend.entity.product.Customer;
+import mx.ohanahome.app.backend.entity.user.Home;
 import mx.ohanahome.app.backend.entity.user.Identify;
 import mx.ohanahome.app.backend.entity.user.Illness;
 import mx.ohanahome.app.backend.entity.user.Intolerance;
+import mx.ohanahome.app.backend.entity.user.PurchaseLimit;
 import mx.ohanahome.app.backend.entity.user.User;
 import mx.ohanahome.app.backend.model.AddInfoPackage;
+import mx.ohanahome.app.backend.model.BudgetPackage;
 import mx.ohanahome.app.backend.model.LoginPackage;
 import mx.ohanahome.app.backend.util.Constants;
 import mx.ohanahome.app.backend.util.EMFProduct;
@@ -57,6 +64,7 @@ public class UserEndpoint {
     @ApiMethod(name = "getUser",httpMethod = ApiMethod.HttpMethod.GET)
     public User getUser(LoginPackage loginPackage) throws MOHException{
 
+        //// TODO: 11/07/16 drop this function, not used, useless...
         EntityManager manager = EMFUser.get().createEntityManager();
         User user = null;
         try {
@@ -90,7 +98,7 @@ public class UserEndpoint {
     }
 
     /**
-     * This update a existent <code>User</code> object
+     * This updates an existent <code>User</code> object
      *
      * @param  loginPackage Package with <code>User</code> and <code>Identify</code> object to be updated.
      * @return The object updated
@@ -246,40 +254,31 @@ public class UserEndpoint {
         return user;
     }
 
-    @ApiMethod(path = "me/info")
-    public void addMedInfo(AddInfoPackage infoPackage) throws MOHException{
+
+    @ApiMethod(path = "me/home", httpMethod = ApiMethod.HttpMethod.POST)
+    public CollectionResponse<Home> getIdHomes(LoginPackage loginPackage) throws MOHException{
         EntityManager userManager = EMFUser.get().createEntityManager();
         Status status;
-
+        List<Home> list;
         try {
-            status = verifyIdentity(infoPackage.getIdentify(), userManager);
-            if (status != Status.OK) throw new MOHException(status.getMessage(), status.getCode());
-            Identify identify = (Identify) status.getResponse();
-
-            userManager.getTransaction().begin();
-
+            Identify identify = loginPackage.getIdentify();
+            logger.log(Level.WARNING,identify.toString());
+            status=verifyIdentity(identify,userManager);
+            if(status != Status.USER_ALREADY_EXISTS) throw new MOHException(status.getMessage(),status.getCode());
+            identify = (Identify)status.getResponse();
             User user = identify.getUser();
-            if (infoPackage.getIllness() != null) {
-                Illness illness = userManager.find(Illness.class, infoPackage.getIllness().getId_illness());
-                user.addIllness(illness);
-            }
-            if (infoPackage.getIntolerance() != null) {
-                Intolerance intolerance = userManager.find(Intolerance.class, infoPackage.getIntolerance().getId_intolerance());
-                user.addIntolerance(intolerance);
-            }
-
-            userManager.persist(user);
-
-            userManager.getTransaction().commit();
+            TypedQuery<Home> query=userManager.createNamedQuery("User.getHomes", Home.class);
+            query.setParameter(1,user.getId_user());
+            list = query.getResultList();
+            return CollectionResponse.<Home>builder().setItems(list).build();
         }finally {
             userManager.close();
         }
-
     }
 
     private Status verifyIdentity(Identify identify, EntityManager manager){
 
-        TypedQuery<Identify> query = manager.createNamedQuery("Identify.verifyIdentity",Identify.class);
+        TypedQuery<Identify> query = manager.createNamedQuery("Identify.verifyIdentity", Identify.class);
 
         query.setParameter(Constants.CIdentity.ID_ADAPTER,identify.getId_adapter());
         query.setParameter(Constants.CIdentity.ADAPTER,identify.getAdapter());
@@ -287,6 +286,42 @@ public class UserEndpoint {
         Identify ident = ids.isEmpty()?null:ids.get(0);
         if(ident!=null) return Status.USER_ALREADY_EXISTS.withResponse(ident);
         else return Status.OK;
+    }
+
+    @ApiMethod(path = "me/purchaseLimit")
+    public void putPurchaseLimit(BudgetPackage budgetPackage) throws MOHException{
+        Status status;
+        EntityManager userManager = EMFUser.get().createEntityManager();
+        try {
+            Identify identify = budgetPackage.getIdentify();
+            status = verifyIdentity(identify,userManager);
+            if(status!=Status.USER_ALREADY_EXISTS) throw new MOHException(status.getMessage(),status.getCode());
+            identify = (Identify)status.getResponse();
+            userManager.getTransaction().begin();
+            User user = identify.getUser();
+            user.addPurchase(budgetPackage.getPurchaseLimit());
+            userManager.persist(user);
+            userManager.getTransaction().commit();
+        }finally {
+            userManager.close();
+        }
+    }
+
+    @ApiMethod(path = "me/purchaseLimit")
+    public CollectionResponse<PurchaseLimit> listPurchases(BudgetPackage budgetPackage) throws MOHException{
+        Status status;
+        EntityManager userManager = EMFUser.get().createEntityManager();
+        try {
+            Identify identify = budgetPackage.getIdentify();
+            status = verifyIdentity(identify,userManager);
+            if(status!=Status.USER_ALREADY_EXISTS) throw new MOHException(status.getMessage(),status.getCode());
+            identify = (Identify)status.getResponse();
+            User user = identify.getUser();
+            return CollectionResponse.<PurchaseLimit>builder().setItems(user.getPurchases()).build();
+
+        }finally {
+            userManager.close();
+        }
     }
 
     private Status validateFields(LoginPackage loginPackage, int flag){

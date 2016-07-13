@@ -51,51 +51,13 @@ public class HomeEndpoint {
 
     private static final Logger logger = Logger.getLogger(HomeEndpoint.class.getName());
 
+
     /**
-     * This method gets the <code>Home</code> object associated with the specified <code>id</code>.
-     *
-     * @param id The id of the object to be returned.
-     * @return The <code>Home</code> associated with <code>id</code>.
+     * Method to find a <code>Home</code> object in database
+     * @param id the id that represents the Home object in database
+     * @param identify the <code>Identify</code> object to verify the credentials.
+     * @return a <code>Home</code> object
      */
-    @ApiMethod(name = "getHome")
-    public Home getHome(@Named("id") long id, Identify identify) throws MOHException{
-
-        Home home;
-        EntityManager manager = EMFUser.get().createEntityManager();
-        try {
-            HomePackage homePackage = new HomePackage();
-            homePackage.setIdentify(identify);
-            //todo drop this function
-            Status status;
-            status = validateFields(homePackage, GET_HOME);
-            if (status != Status.OK) throw new MOHException(status.getMessage(), status.getCode());
-
-
-            if (identify == null)
-                throw new MOHException(Status.AUTH_ERROR.getMessage(), MOHException.STATUS_AUTH_ERROR);
-            status = verifyIdentity(identify, manager);
-            if (status != Status.OK) throw new MOHException(status.getMessage(), status.getCode());
-
-            identify = (Identify) status.getResponse();
-
-
-            home = manager.find(Home.class, id);
-
-            //Set<UserRole> users = home.getUserRoles();
-           // if (!users.contains(identify.getUser()))
-              //  throw new MOHException("Auth Error", MOHException.STATUS_AUTH_ERROR);
-
-            logger.info("Calling getHome method");
-            if (home == null)
-                throw new MOHException(Status.HOME_NOT_FOUND.getMessage(), MOHException.STATUS_OBJECT_NOT_ACCESSIBLE);
-        }finally {
-            manager.close();
-        }
-
-        return home;
-    }
-
-
     @ApiMethod(name = "findHome",path = "myhome")
     public Home findHome(@Named("id") long id, Identify identify) throws MOHException{
 
@@ -105,7 +67,6 @@ public class HomeEndpoint {
         try {
             HomePackage homePackage = new HomePackage();
             homePackage.setIdentify(identify);
-            //todo drop this function
             Status status;
             status = validateFields(homePackage, GET_HOME);
             if (status != Status.OK) throw new MOHException(status.getMessage(), status.getCode());
@@ -142,13 +103,12 @@ public class HomeEndpoint {
             manager.close();
         }
 
-
         return home;
     }
     /**
      * This inserts a new <code>Home</code> object.
      *
-     * @param homePackage The object to be added.
+     * @param homePackage The <code>HomePackage</code> that contains the <code>Home</code> and credentials for insertion.
      * @return The object to be added.
      */
     @ApiMethod(name = "insertHome",httpMethod = ApiMethod.HttpMethod.POST)
@@ -211,6 +171,9 @@ public class HomeEndpoint {
             home.addUserRole(userRole);
             manager.persist(home);
 
+            user.addHome(home);
+            manager.persist(user);
+
             manager.flush();
             EntityTransaction transaction1 = invitationManager.getTransaction();
             EntityTransaction transaction2 = productManager.getTransaction();
@@ -257,6 +220,12 @@ public class HomeEndpoint {
         return home;
     }
 
+    /**
+     * This updates a existent <code>Home</code> object.
+     *
+     * @param homePackage The <code>HomePackage</code> that contains the <code>Home</code> and credentials for update.
+     * @return The object to be added.
+     */
     @ApiMethod(name = "updateHome")
     public Home updateHome(HomePackage homePackage) throws MOHException{
 
@@ -335,6 +304,12 @@ public class HomeEndpoint {
 
     }
 
+    /**
+     * This is for validate the fields in the request but it's empty as the Oaxaca's schools
+     * @param homePackage
+     * @param flag
+     * @return
+     */
     private Status validateFields(HomePackage homePackage, int flag){
         if(false){
             return Status.NOT_ENOUGH_DATA;

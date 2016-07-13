@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import mx.ohanahome.app.backend.entity.user.*;
+
 /**
  * Created by brenda on 5/1/16.
  */
@@ -27,8 +29,12 @@ public class OrderProduct {
     @Column(name="id_order_product")
     private long id_order_product;
 
-    private long id_order;
+
     private long id_product;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_order")
+    private Order order;
 
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -62,13 +68,7 @@ public class OrderProduct {
         this.id_order_product = id_order_product;
     }
 
-    public long getId_order() {
-        return id_order;
-    }
 
-    public void setId_order(long id_order) {
-        this.id_order = id_order;
-    }
 
     public long getId_product() {
         return id_product;
@@ -100,5 +100,13 @@ public class OrderProduct {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Customer getCustomer_product() {
+        return customer_product;
+    }
+
+    public void setCustomer_product(Customer customer_product) {
+        this.customer_product = customer_product;
     }
 }

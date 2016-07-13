@@ -128,5 +128,12 @@ public class Identify {
         this.user = user;
     }
 
-
+    @Override
+    public String toString() {
+        return "Identify{" +
+                "id_adapter='" + id_adapter + '\'' +
+                ", adapter='" + adapter + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

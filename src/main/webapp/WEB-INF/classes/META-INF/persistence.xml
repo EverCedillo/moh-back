@@ -19,7 +19,6 @@
         <class>mx.ohanahome.app.backend.entity.user.RolePermission</class>
         <class>mx.ohanahome.app.backend.entity.user.Store</class>
         <class>mx.ohanahome.app.backend.entity.user.User</class>
-        <class>mx.ohanahome.app.backend.entity.user.UserHome</class>
         <class>mx.ohanahome.app.backend.entity.user.UserIllness</class>
         <class>mx.ohanahome.app.backend.entity.user.UserIntolerance</class>
         <class>mx.ohanahome.app.backend.entity.user.UserRole</class>

@@ -36,9 +36,11 @@ public class Customer {
             inverseJoinColumns=@JoinColumn(name="id_home"))
     private Set<Home> homes;
 
-    /*
+
     @OneToMany(mappedBy=" customer_product")
     private Set<OrderProduct> orderProducts ;
+
+    /*
 
     @OneToMany(mappedBy=" customer_payment")
     private Set<Payment> payments  ;
@@ -204,6 +206,19 @@ public class Customer {
     public void setModification_date(Date modification_date) {
         this.modification_date = modification_date;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+
+        Customer customer = (Customer) o;
+
+        return id_customer == customer.id_customer;
+
+    }
+
+
 }
 
 

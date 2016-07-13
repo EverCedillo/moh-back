@@ -32,8 +32,8 @@ public class Product {
 
     /*@ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
     private Set<Store> stores;
-
-    @OneToMany(mappedBy="products")
+*/
+    @OneToMany(mappedBy="product")
     private Set<ProductPrice> product_prices ;
 
     //@ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
@@ -167,9 +167,9 @@ public class Product {
     public Set<Store> getStores() {
         return stores;
     }
-
+*/
     public Set<ProductPrice> getProduct_prices() {
         return product_prices;
-    }*/
+    }
 }
 

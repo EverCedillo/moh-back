@@ -5,6 +5,7 @@ package mx.ohanahome.app.backend.entity.user;
 import com.google.appengine.repackaged.org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,6 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,10 +27,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Created by brenda on 4/3/16.
+ * Created by brenda on 4/3/16
  */
 
-@NamedQuery(name = "User.findUserByEmail",query = "select t from User t where email = :email")
+@NamedQueries(
+        @NamedQuery(name = "User.findUserByEmail",query = "select t from User t where email = :email")
+)
+@NamedNativeQueries(
+        @NamedNativeQuery(name = "User.getHomes", query = "Select h.id_home from TOH_HOME h, TOH_USER_HOME uh where uh.id_user = ? and h.id_home = uh.id_home",resultClass = Home.class)
+)
 @Table(name = "TOH_USER")
 @Entity
 public class User{
@@ -37,7 +46,7 @@ public class User{
     private long id_user;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name= "TOH_USER_HOME",
             joinColumns=@JoinColumn(name="id_user"),
@@ -308,6 +317,16 @@ public class User{
     }
 
     public void deleteIllness(Illness illness){illnesses.remove(illness);}
+
+    public void addPurchase(PurchaseLimit limit){
+        purchases.add(limit);
+    }
+
+    public void addHome(Home home){
+        if(homes==null)
+            homes=new HashSet<>();
+        homes.add(home);
+    }
 
 
     @Override

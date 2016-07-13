@@ -6,7 +6,7 @@ import mx.ohanahome.app.backend.entity.user.Identify;
 import mx.ohanahome.app.backend.entity.user.User;
 
 /**
- * Created by ever on 18/04/16.
+ * Created by ever on 18/04/16
  */
 public class LoginPackage {
     private User user;
@@ -30,5 +30,13 @@ public class LoginPackage {
 
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setIdentify(Identify identify) {
+        this.identify = identify;
     }
 }

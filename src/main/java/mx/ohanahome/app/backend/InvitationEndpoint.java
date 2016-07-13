@@ -180,7 +180,7 @@ public class InvitationEndpoint {
             }else throw new MOHException("HOli", 1);
 
             String content = Constants.CInvitation.INVITATION_MAIL;
-            String link = Constants.CInvitation.INVITATON_LINK;
+            String link = Constants.CInvitation.INVITATION_LINK;
 
 
             Formatter formatLink = new Formatter();

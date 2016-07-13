@@ -27,7 +27,7 @@ public class ProductPrice {
 
     @ManyToOne(fetch= FetchType.EAGER)
     @JoinColumn(name="id_product")
-    private Product product_prices;
+    private Product product;
 
     Double price;
     Double discount;
