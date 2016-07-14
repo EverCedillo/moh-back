@@ -36,6 +36,13 @@ public class Customer {
             inverseJoinColumns=@JoinColumn(name="id_home"))
     private Set<Home> homes;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name= "TOH_CUSTOMER_ORDER",
+            joinColumns=@JoinColumn(name="id_customer"),
+            inverseJoinColumns=@JoinColumn(name="id_order"))
+    private Set<CustomerOrder> orders;
+
 
     @OneToMany(mappedBy=" customer_product")
     private Set<OrderProduct> orderProducts ;
