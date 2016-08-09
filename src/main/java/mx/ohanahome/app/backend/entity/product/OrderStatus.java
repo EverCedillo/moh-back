@@ -9,14 +9,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 
 /**
- * Created by brenda on 5/1/16.
+ * Created by brenda on 5/1/16
  */
+@NamedQueries(
+        @NamedQuery(name = "OrderStatus.getStatusesByOrder",query = "select new mx.ohanahome.app.backend.entity.product.OrderStatus(os.status_name) from OrderStatus os where os.order_status.id_order = ?1")
+)
 @Table(name = "TOH_ORDER_STATUS")
 @Entity
 public class OrderStatus {
@@ -34,10 +41,15 @@ public class OrderStatus {
     @JoinColumn(name="id_order")
     private Order order_status;
 
+
     String status_name;
 
     public OrderStatus(String status_name){
         this.status_name = status_name;
+
+    }
+
+    public OrderStatus(){
 
     }
 
@@ -57,9 +69,6 @@ public class OrderStatus {
         this.date_order_status = date_order_status;
     }
 
-    public Order getOrder_status() {
-        return order_status;
-    }
 
     public void setOrder_status(Order order_status) {
         this.order_status = order_status;
@@ -72,4 +81,6 @@ public class OrderStatus {
     public void setStatus_name(String status_name) {
         this.status_name = status_name;
     }
+
+
 }

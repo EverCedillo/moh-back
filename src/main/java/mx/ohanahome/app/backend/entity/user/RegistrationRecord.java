@@ -9,8 +9,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+@NamedQueries(
+        @NamedQuery(name = "RegistrationRecord.getRecordsByUser" , query = "select rr from RegistrationRecord rr where rr.user.id_user = ?1")
+)
 @Table(name = "TOH_REGISTRATION_DEVICE")
 @Entity
 public class RegistrationRecord {
@@ -21,7 +28,7 @@ public class RegistrationRecord {
 
 
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user")
     User user;
 

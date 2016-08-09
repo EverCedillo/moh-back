@@ -10,6 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -17,11 +21,14 @@ import javax.persistence.TemporalType;
 
 import mx.ohanahome.app.backend.entity.user.*;
 /**
- * Created by brenda on 7/13/16.
+ * Created by brenda on 7/13/16
  */
 
 
-
+@NamedQueries(
+        {@NamedQuery(name = "CustomerOrder.getCOByOrderAndCustomer", query = "select co from CustomerOrder co where co.order.id_order = ?1 and co.id_customer = ?2"),
+        @NamedQuery(name = "CustomerOrder.getCustomerOrderByOrder", query = "select co from CustomerOrder co where co.order.id_order = ?1")}
+)
 @Table(name = "TOH_CUSTOMER_ORDER")
 @Entity
 public class CustomerOrder {
@@ -30,12 +37,18 @@ public class CustomerOrder {
     @Column(name="id_customer_order")
     private long id_customer_order;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_order")
+    private Order order;
 
     @Temporal(TemporalType.TIMESTAMP)
     Date status_date;
 
     String order_status;
     String customer_rol;
+
+
+    private long id_customer;
 
     public CustomerOrder (String order_status, String customer_rol) {
         this.order_status = order_status;
@@ -73,4 +86,13 @@ public class CustomerOrder {
     public void setCustomer_rol(String customer_rol) {
         this.customer_rol = customer_rol;
     }
+
+    public long getId_customer() {
+        return id_customer;
+    }
+
+    public void setId_customer(long id_customer) {
+        this.id_customer = id_customer;
+    }
+    public CustomerOrder(){}
 }

@@ -66,6 +66,11 @@ public class Constants {
         public static final String INVITATION_TOPIC = "invite";
         public static final String JOIN_HOME_TOPIC = "join_home";
         public static final String ORDER_INVITATION_TOPIC = "order_invite";
+        public static final String ORDER_PUSH_PRODUCT_TOPIC = "push_product";
+        public static final String ORDER_PUSH_CUSTOMER_TOPIC = "push_customer";
+
+        public static final String TOTAL_DESTRUCTION = "total_destruction";
+
     }
 
     public static class CPermission{
@@ -99,6 +104,53 @@ public class Constants {
 
     public static class COrder{
         public static final String ORDER_INVITATION_MSG = "%1$s te ha invitado a una compra";
+
     }
 
+    public static class CCustomerOrder{
+        public static final String PENDING_ORDER = "Pendiente";
+        public static final String ACCEPTED_ORDER = "Aceptada";
+        public static final String CANCELED_ORDER = "Cancelada";
+        public static final String REJETCED_ORDER = "Rechazada";
+
+        public static final String ADMIN_ROL = "Administrador";
+        public static final String NORMAL_ROL = "Invitado";
+    }
+
+    public static class COrderStatus{
+        public static final String PENDING_ORDER="Compra en proceso";
+        public static final String CANCELED_ORDER ="Compra cancelada";
+        public static final String COMPLETE_ORDER = "Compra finalizada";
+        public static final String SENT_ORDER = "Compra enviada";
+    }
+
+    public static class COrderProduct{
+        public static final String ID_ORDER_PRODUCT = "id_order_product";
+        public static final String ID_PRODUCT = "id_product";
+        public static final String ID_CUSTOMER = "id_customer";
+        public static final String ID_ORDER = "id_order";
+        public static final String QUANTITY ="quantity";
+        public static final String PRICE = "price";
+
+        public static final String ALL_COLUMNS [] = {ID_ORDER_PRODUCT,
+        ID_PRODUCT,
+        ID_CUSTOMER,
+        ID_ORDER,
+        QUANTITY,
+        PRICE};
+    }
+
+    public static class CProduct{
+        public static final String ID_PRODUCT="id_product";
+        public static final String PRODUCT_NAME="product_name";
+        public static final String ORDER_QUANTITY="order_quantity";
+        public static final String CATEGORY = "category";
+        public static final String SUB_CATEGORY = "sub_category";
+        public static final String DEPTO = "depto";
+        public static final String AMOUNT = "amount";
+        public static final String UNIT = "unit";
+        public static final String BRAND = "brand";
+        public static final String PRODUCT_NO = "product_no";
+        public static final String IMAGE = "image";
+    }
 }

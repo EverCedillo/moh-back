@@ -36,7 +36,7 @@ public class UserRole {
     @Temporal(TemporalType.TIMESTAMP)
     Date end_date;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST )
     @JoinColumn(name = "id_role")
     private Role role;
 

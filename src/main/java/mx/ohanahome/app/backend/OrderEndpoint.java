@@ -3,10 +3,13 @@ package mx.ohanahome.app.backend;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
-import com.sun.javafx.binding.StringFormatter;
+import com.google.api.server.spi.response.CollectionResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Formatter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,17 +22,23 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import mx.ohanahome.app.backend.entity.product.Customer;
+import mx.ohanahome.app.backend.entity.product.CustomerOrder;
 import mx.ohanahome.app.backend.entity.product.Order;
 import mx.ohanahome.app.backend.entity.product.OrderProduct;
+import mx.ohanahome.app.backend.entity.product.OrderStatus;
+import mx.ohanahome.app.backend.entity.product.Product;
 import mx.ohanahome.app.backend.entity.user.Identify;
 import mx.ohanahome.app.backend.entity.user.RegistrationRecord;
 import mx.ohanahome.app.backend.entity.user.User;
+import mx.ohanahome.app.backend.model.NotificationPackage;
 import mx.ohanahome.app.backend.model.OrderPackage;
-
 import mx.ohanahome.app.backend.util.Constants;
 import mx.ohanahome.app.backend.util.EMFProduct;
 import mx.ohanahome.app.backend.util.EMFUser;
 import mx.ohanahome.app.backend.util.MOHException;
+
+import static mx.ohanahome.app.backend.util.Constants.COrderProduct.*;
+import static mx.ohanahome.app.backend.util.Constants.CProduct.*;
 
 /**
  * An endpoint class we are exposing
@@ -51,14 +60,34 @@ public class OrderEndpoint {
     /**
      * This method gets the <code>Order</code> object associated with the specified <code>id</code>.
      *
-     * @param id The id of the object to be returned.
+     * @param orderPackage The id of the object to be returned.
      * @return The <code>Order</code> associated with <code>id</code>.
      */
-    @ApiMethod(name = "getOrder")
-    public Order getOrder(@Named("id") Long id) {
+    @ApiMethod(name = "getOrder", httpMethod = ApiMethod.HttpMethod.POST)
+    public Order getOrder(OrderPackage orderPackage) throws MOHException{
         // TODO: Implement this function
-        logger.info("Calling getOrder method");
-        return null;
+        EntityManager productManager = EMFProduct.get().createEntityManager();
+        EntityManager userManager = EMFUser.get().createEntityManager();
+        Order order = orderPackage.getOrder();
+        Identify identify = orderPackage.getIdentify();
+        Status status;
+        try {
+            status = verifyIdentity(identify, userManager);
+            if(status!=Status.USER_ALREADY_EXISTS) throw new MOHException(status.getMessage(),status.getCode());
+            identify = (Identify) status.getResponse();
+
+            order = productManager.find(Order.class,order.getId_order());
+            for(CustomerOrder co: order.getCustomerOrders())
+                if(co.getId_customer()==identify.getUser().getId_user())
+                    return order;
+
+            throw new MOHException("The user is not in the order", MOHException.STATUS_OBJECT_NOT_ACCESSIBLE);
+
+        }finally {
+            productManager.close();
+        }
+
+
     }
 
     /**
@@ -67,9 +96,9 @@ public class OrderEndpoint {
      * @param orderPackage The object to be added.
      * @return The object to be added.
      */
-    @ApiMethod(name = "insertOrder")
+    @ApiMethod(name = "insertOrder", httpMethod = ApiMethod.HttpMethod.PUT)
     public Order insertOrder(OrderPackage orderPackage) throws MOHException{
-        // TODO: Implement this function
+
         Status status;
         EntityManager productManager = EMFProduct.get().createEntityManager();
         EntityManager userManager = EMFUser.get().createEntityManager();
@@ -85,50 +114,71 @@ public class OrderEndpoint {
             identify = (Identify)status.getResponse();
             user=identify.getUser();
 
-            List<OrderProduct> orderProductList = orderPackage.getOrderProductList();
-            Set<OrderProduct> productSet = new HashSet<>();
-            Set<Customer> customers = new HashSet<>();
+
+            List<Customer> customerList = orderPackage.getCustomerList();
             Set<User> users = new HashSet<>();
+            List<CustomerOrder> customerOrderList = new ArrayList<>();
 
             order = orderPackage.getOrder();
             order.setCreation_date(new Date());
 
+            //order.addOrderProduct(orderProductList);
+
+            OrderStatus orderStatus = new OrderStatus(Constants.COrderStatus.PENDING_ORDER);
+            orderStatus.setDate_order_status(new Date());
+            orderStatus.setOrder_status(order);
+            order.addOrderStatus(orderStatus);
 
 
-            productSet.addAll(orderProductList);
+            CustomerOrder customer = new CustomerOrder(Constants.CCustomerOrder.ACCEPTED_ORDER,Constants.CCustomerOrder.ADMIN_ROL);
+            customer.setId_customer(orderPackage.getOwner().getId_customer());
+            customer.setStatus_date(new Date());
+            customerOrderList.add(customer);
 
-            for(OrderProduct or: productSet){
-                or.setCreation_date(new Date());
-                customers.add(or.getCustomer_product());
+            for(Customer c: customerList){
+                CustomerOrder customerOrder = new CustomerOrder(Constants.CCustomerOrder.PENDING_ORDER,Constants.CCustomerOrder.NORMAL_ROL);
+                customerOrder.setStatus_date(new Date());
+                customerOrder.setId_customer(c.getId_customer());
+                customerOrderList.add(customerOrder);
+
+
+                User user1=userManager.find(User.class, c.getId_customer());
+                logger.log(Level.INFO,"Id "+c.getId_customer()+"was "+ (user1==null?"null":"success"));
+                if(user1!=null)
+                    users.add(user1);
             }
 
-            for(Customer customer: customers){
-                customer = productManager.find(Customer.class,customer.getId_customer());
-                users.add(userManager.find(User.class,customer.getId_customer()));
-            }
-
-            order.setOrderProducts(productSet);
+            order.addCustomerOrder(customerOrderList);
 
             transaction.begin();
             productManager.persist(order);
             productManager.flush();
 
-            try {
-                for (User u : users)
-                    for (RegistrationRecord r : u.getRecords()) {
-                        String message = StringFormatter.format(Constants.COrder.ORDER_INVITATION_MSG, user.getUser_name()).getValue();
-                        new MessagingEndpoint().sendMessage(message, r, Constants.CMessaging.ORDER_INVITATION_TOPIC, String.valueOf(order.getId_order()));
-                    }
-            }catch (IOException e){
-                logger.log(Level.WARNING,e.getMessage(),e.getCause());
 
-            }
+            for (User u : users)
+                for (RegistrationRecord r : u.getRecords()) {
+                    Formatter formatter = new Formatter();
+                    NotificationPackage notificationPackage = new NotificationPackage();
+                    HashMap<String,String> extras = new HashMap<>();
+                    extras.put("extra", String.valueOf(order.getId_order()));
+                    notificationPackage.setExtras(extras);
+                    notificationPackage.setRegistrationRecord(r);
+                    try {
+                        String message = formatter.format(Constants.COrder.ORDER_INVITATION_MSG, user.getUser_name()).toString();
+                        new MessagingEndpoint().sendMessage(message,notificationPackage ,Constants.CMessaging.ORDER_INVITATION_TOPIC );
+                    }catch (IOException e){
+                        e.printStackTrace();
+                        logger.log(Level.WARNING, e.getMessage(), e.getCause());
+                    }
+
+                }
+
             transaction.commit();
 
-        }catch (Exception e){
-            logger.log(Level.WARNING,e.getMessage(),e.getCause());
         }
         finally {
+            if(transaction.isActive())
+                transaction.rollback();
             productManager.close();
             userManager.close();
         }
@@ -137,6 +187,214 @@ public class OrderEndpoint {
         return order;
     }
 
+
+    @ApiMethod(name = "pushProduct" , path = "me/products", httpMethod = ApiMethod.HttpMethod.PUT)
+    public void insertProduct(OrderPackage orderPackage) throws MOHException{
+        Status status;
+        EntityManager productManager = EMFProduct.get().createEntityManager();
+        EntityManager userManager = EMFUser.get().createEntityManager();
+
+        Order order= orderPackage.getOrder();
+        Identify identify = orderPackage.getIdentify();
+        User user;
+
+        // TODO: 26/07/16 am I in the Order?
+
+        EntityTransaction transaction = productManager.getTransaction();
+        try {
+            status = verifyIdentity(identify, userManager);
+            if (status != Status.USER_ALREADY_EXISTS)
+                throw new MOHException(status.getMessage(), status.getCode());
+            identify = (Identify) status.getResponse();
+            user = identify.getUser();
+
+            OrderProduct orderProduct=orderPackage.getOrderProduct();
+            transaction.begin();
+            Product product = productManager.find(Product.class,orderProduct.getProduct().getId_product());
+            orderProduct.setProduct(product);
+            productManager.persist(orderProduct);
+
+            productManager.flush();
+            TypedQuery<CustomerOrder> query = productManager.createNamedQuery("CustomerOrder.getCustomerOrderByOrder", CustomerOrder.class);
+            query.setParameter(1,order.getId_order());
+            List<CustomerOrder> customerOrderList = query.getResultList();
+            for (CustomerOrder co: customerOrderList){
+                if(co.getOrder_status().equals(Constants.CCustomerOrder.ACCEPTED_ORDER)&&co.getId_customer()!=user.getId_user()){
+                    TypedQuery<RegistrationRecord> q = userManager.createNamedQuery("RegistrationRecord.getRecordsByUser", RegistrationRecord.class);
+                    q.setParameter(1,co.getId_customer());
+                    List<RegistrationRecord> rr  = q.getResultList();
+
+
+                    HashMap<String,String> extras = new HashMap<>();
+
+                    extras.put(ID_ORDER_PRODUCT,String.valueOf(orderProduct.getId_order_product()));
+                    extras.put(ID_ORDER,String.valueOf(order.getId_order()));
+                    extras.put(ID_CUSTOMER,String.valueOf(orderProduct.getId_customer()));
+                    extras.put(PRICE,String . valueOf(product.getProduct_prices().first().getPrice()));
+                    extras.put(QUANTITY, String . valueOf(orderProduct.getQuantity()));
+
+                    extras.put(Constants.COrderProduct.ID_PRODUCT,String .valueOf(product.getId_product()));
+                    extras.put(PRODUCT_NAME,product.getProduct_name());
+                    extras.put(ORDER_QUANTITY,String .valueOf(product.getOrder_quantity()));
+                    extras.put(CATEGORY,String .valueOf(product.getCategory()));
+                    extras.put(SUB_CATEGORY,String .valueOf(product.getSub_category()));
+                    extras.put(DEPTO,String .valueOf(product.getDepto()));
+                    extras.put(AMOUNT, String .valueOf(product.getAmount()));
+                    extras.put(UNIT,String .valueOf(product.getUnit()));
+                    extras.put(BRAND, String .valueOf(product.getBrand()));
+                    extras.put(PRODUCT_NO, String .valueOf(product.getProduct_no()));
+                    extras.put(IMAGE,product.getImage());
+
+
+                    for(RegistrationRecord r:rr){
+                        NotificationPackage notificationPackage = new NotificationPackage();
+                        notificationPackage.setRegistrationRecord(r);
+                        notificationPackage.setExtras(extras);
+
+                        try {
+                            new MessagingEndpoint().sendMessage(
+                                    String.valueOf(orderProduct.getId_order_product()),
+                                    notificationPackage,
+                                    Constants.CMessaging.ORDER_PUSH_PRODUCT_TOPIC);
+                        }catch (IOException e){
+                            logger.log(Level.WARNING,e.getMessage(),e.getCause());
+                        }
+                    }
+                }
+            }
+
+            transaction.commit();
+
+        }finally {
+            if(transaction.isActive())
+                transaction.rollback();
+            productManager.close();
+            userManager.close();
+        }
+    }
+
+    @ApiMethod(path = "me/products", httpMethod = ApiMethod.HttpMethod.POST)
+    public CollectionResponse<OrderProduct> pullProduct(OrderPackage orderPackage) throws MOHException{
+
+        Status status;
+        EntityManager productManager = EMFProduct.get().createEntityManager();
+        EntityManager userManager = EMFUser.get().createEntityManager();
+
+        Identify identify = orderPackage.getIdentify();
+
+        Order order = orderPackage.getOrder();
+        // TODO: 26/07/16 am I in the Order?
+
+
+        try {
+            status = verifyIdentity(identify, userManager);
+            if (status != Status.USER_ALREADY_EXISTS)
+                throw new MOHException(status.getMessage(), status.getCode());
+            identify = (Identify) status.getResponse();
+            User user = identify.getUser();
+
+
+            TypedQuery<OrderProduct> query = productManager.createNamedQuery("OrderProduct.getProductsByCustomerAndOrder", OrderProduct.class);
+            query.setParameter(ID_CUSTOMER,user.getId_user());
+            query.setParameter(ID_ORDER,order.getId_order());
+
+            List<OrderProduct> orderProductList = query.getResultList();
+
+
+            return CollectionResponse.<OrderProduct>builder().setItems(orderProductList).build();
+
+        }finally {
+            productManager.close();
+            userManager.close();
+        }
+
+    }
+
+    @ApiMethod(path = "me/customer", httpMethod = ApiMethod.HttpMethod.POST)
+    public void resolveCustomerOrder(OrderPackage orderPackage) throws MOHException{
+        Status status;
+        EntityManager productManager = EMFProduct.get().createEntityManager();
+        EntityManager userManager = EMFUser.get().createEntityManager();
+
+        Order order= orderPackage.getOrder();
+        Identify identify = orderPackage.getIdentify();
+        User user;
+
+        EntityTransaction transaction = productManager.getTransaction();
+        try {
+            status = verifyIdentity(identify, userManager);
+            if (status != Status.USER_ALREADY_EXISTS)
+                throw new MOHException(status.getMessage(), status.getCode());
+            identify = (Identify) status.getResponse();
+            user = identify.getUser();
+
+            CustomerOrder customerOrder = orderPackage.getGuest();
+
+            transaction.begin();
+
+            TypedQuery<OrderStatus> query = productManager.createNamedQuery("OrderStatus.getStatusesByOrder",OrderStatus.class);
+            query.setParameter(1,order.getId_order());
+            List<OrderStatus> statuses = query.getResultList();
+            if(statuses.isEmpty())
+                logger.log(Level.WARNING,"Not found status");
+            boolean flag=false;
+            for(OrderStatus os : statuses)
+                flag=os.getStatus_name().equals(Constants.COrderStatus.CANCELED_ORDER)
+                        ||os.getStatus_name().equals(Constants.COrderStatus.SENT_ORDER)
+                        ||os.getStatus_name().equals(Constants.COrderStatus.COMPLETE_ORDER);
+
+            if(flag)
+                throw new MOHException("Order has finished or has been canceled", MOHException.STATUS_OBJECT_NOT_ACCESSIBLE);
+
+            TypedQuery<CustomerOrder> query1 = productManager.createNamedQuery("CustomerOrder.getCOByOrderAndCustomer",CustomerOrder.class);
+            query1.setParameter(1,order.getId_order());
+            query1.setParameter(2,customerOrder.getId_customer());
+            customerOrder = query1.getResultList().get(0);
+            if(customerOrder==null) throw new  MOHException("The customer is not invited", MOHException.STATUS_AUTH_ERROR);
+
+            customerOrder.setOrder_status(orderPackage.getGuest().getOrder_status());
+
+            productManager.persist(customerOrder);
+
+            productManager.flush();
+
+            if(customerOrder.getOrder_status().equals(Constants.CCustomerOrder.ACCEPTED_ORDER)) {
+                TypedQuery<CustomerOrder> query2 = productManager.createNamedQuery("CustomerOrder.getCustomerOrderByOrder", CustomerOrder.class);
+                query2.setParameter(1, order.getId_order());
+                List<CustomerOrder> customerOrderList = query2.getResultList();
+                for (CustomerOrder co : customerOrderList) {
+                    if (co.getOrder_status().equals(Constants.CCustomerOrder.ACCEPTED_ORDER) && co.getId_customer() != user.getId_user()) {
+                        TypedQuery<RegistrationRecord> q = userManager.createNamedQuery("RegistrationRecord.getRecordsByUser", RegistrationRecord.class);
+                        q.setParameter(1, co.getId_customer());
+                        List<RegistrationRecord> rr = q.getResultList();
+                        for (RegistrationRecord r : rr) {
+                            NotificationPackage notificationPackage = new NotificationPackage();
+                            notificationPackage.setRegistrationRecord(r);
+                            HashMap<String,String> extras = new HashMap<>();
+                            extras.put("extra",String.valueOf(order.getId_order()));
+                            notificationPackage.setExtras(extras);
+                            try {
+                                new MessagingEndpoint().sendMessage(
+                                        String.valueOf(customerOrder.getId_customer()),
+                                        notificationPackage,
+                                        Constants.CMessaging.ORDER_PUSH_CUSTOMER_TOPIC);
+                            } catch (IOException e) {
+                                logger.log(Level.WARNING, e.getMessage(), e.getCause());
+                            }
+                        }
+                    }
+                }
+            }
+
+            transaction.commit();
+
+        }finally {
+            if(transaction.isActive())
+                transaction.rollback();
+            productManager.close();
+            userManager.close();
+        }
+    }
 
     private Status verifyIdentity(Identify identify, EntityManager manager){
 

@@ -35,13 +35,14 @@ public class Shipment {
     @OneToMany(mappedBy="shipments")
     private Set<Shipment_Status> shipment_status;
 
-    @OneToMany(mappedBy=" shipment_payment")
+    @OneToMany(mappedBy="shipment_payment")
     private Set<Payment> payments;
 
 
+    /*
     @ManyToOne(fetch= FetchType.EAGER)
     @JoinColumn(name="id_order")
-    private Order shipment_order;
+    private Order shipment_order;*/
 
 
     @ManyToOne(fetch= FetchType.EAGER)
@@ -59,9 +60,8 @@ public class Shipment {
 
 
 
-    String shipment_details;
+    //String shipment_details;
 
-    private long id_order;
 
 
     public long getId_shipment() {
@@ -72,13 +72,7 @@ public class Shipment {
         this.id_shipment = id_shipment;
     }
 
-    public long getId_order() {
-        return id_order;
-    }
 
-    public void setId_order(long id_order) {
-        this.id_order = id_order;
-    }
 
     public Date getShipment_date() {
         return shipment_date;
@@ -88,13 +82,7 @@ public class Shipment {
         this.shipment_date = shipment_date;
     }
 
-    public String getShipment_details() {
-        return shipment_details;
-    }
 
-    public void setShipment_details(String shipment_details) {
-        this.shipment_details = shipment_details;
-    }
 
 
 

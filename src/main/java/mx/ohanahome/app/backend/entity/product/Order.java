@@ -1,5 +1,9 @@
 package mx.ohanahome.app.backend.entity.product;
 
+import com.google.api.server.spi.response.CollectionResponse;
+
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Date;
@@ -14,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,7 +29,7 @@ import javax.persistence.TemporalType;
 
 
 /**
- * Created by brenda on 5/1/16.
+ * Created by brenda on 5/1/16
  */
 @Table(name = "TOH_ORDER")
 @Entity
@@ -34,9 +40,7 @@ public class Order {
     private  long id_order;
 
 
-    @ManyToOne(fetch= FetchType.EAGER)
-    @JoinColumn(name="id_home")
-    private Home home_order;
+    private long id_home;
 
 
     String order_name;
@@ -49,26 +53,29 @@ public class Order {
     /*
     @OneToMany(mappedBy="shipment_order", fetch = FetchType.EAGER)
     private Set<Shipment> shipments;
-    */
-
-    @OneToMany(mappedBy="order_status", fetch = FetchType.EAGER)
-    private Set<OrderStatus> orderStatuses;
+    *
 
 
-    @OneToMany(mappedBy="order",fetch = FetchType.EAGER)
-    private Set<CustomerHome> customerOrders;
-
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name= "TOH_ORDER_PRODUCT",
             joinColumns=@JoinColumn(name="id_order"),
-            inverseJoinColumns=@JoinColumn(name="product"))
-    private Set<Product> products;
+            inverseJoinColumns=@JoinColumn(name="product"))*
+
+    @OneToMany(mappedBy="order", fetch = FetchType.EAGER)
+    private Set<OrderProduct> products;*/
+
+    @OneToMany(mappedBy="order_status", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<OrderStatus> orderStatuses;
 
 
     @OneToMany(mappedBy="order",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<OrderProduct> orderProducts;
+    private Set<CustomerOrder> customerOrders;
+
+
+    /*
+    @OneToMany(mappedBy="order",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<OrderProduct> orderProducts;*/
 
 
 
@@ -77,6 +84,8 @@ public class Order {
         this.order_name = order_name;
 
     }
+
+
 
     public long getId_order() {
         return id_order;
@@ -103,15 +112,52 @@ public class Order {
         this.order_name = order_name;
     }
 
+
+    /*
     public Set<OrderProduct> getOrderProducts() {
         return orderProducts;
     }
 
-    public void addOrderProduct(List<OrderProduct> products){
+    public void addOrderProduct(Collection<OrderProduct> products){
+        if(orderProducts==null)
+            orderProducts = new HashSet<>();
         orderProducts.addAll(products);
     }
-
     public void setOrderProducts(Set<OrderProduct> orderProducts) {
         this.orderProducts = orderProducts;
     }
+    */
+
+
+    public void addCustomerOrder(Collection<CustomerOrder> customers){
+        if(customerOrders==null)
+            customerOrders = new HashSet<>();
+        customerOrders.addAll(customers);
+    }
+
+
+    public Set<CustomerOrder> getCustomerOrders() {
+        return customerOrders;
+    }
+
+    public void addOrderStatus(OrderStatus orderStatus){
+        if(orderStatuses==null)
+            orderStatuses=new HashSet<>();
+        orderStatuses.add(orderStatus);
+    }
+
+    public long getId_home() {
+        return id_home;
+    }
+
+    public void setId_home(long id_home) {
+        this.id_home = id_home;
+    }
+
+    public Set<OrderStatus> getOrderStatuses() {
+        return orderStatuses;
+    }
+
+
 }
+

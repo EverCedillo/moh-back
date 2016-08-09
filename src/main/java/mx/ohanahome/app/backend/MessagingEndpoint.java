@@ -13,12 +13,19 @@ import com.google.android.gcm.server.Sender;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiNamespace;
 
+import org.datanucleus.api.jpa.NucleusJPAHelper;
+
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Logger;
 import javax.inject.Named;
+import javax.jdo.JDOHelper;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import mx.ohanahome.app.backend.entity.user.RegistrationRecord;
+import mx.ohanahome.app.backend.model.NotificationPackage;
 import mx.ohanahome.app.backend.util.EMFUser;
 
 
@@ -52,7 +59,7 @@ public class MessagingEndpoint {
      *
      * @param message The message to send
      */
-    public void sendMessage(@Named("message") String message, RegistrationRecord record, @Named("topic") String topic, @Named("extra")String extra) throws IOException {
+    public void sendMessage(@Named("message") String message, NotificationPackage notificationPackage, @Named("topic") String topic) throws IOException {
         if(message == null || message.trim().length() == 0) {
             log.warning("Not sending message because it is empty");
             return;
@@ -63,8 +70,18 @@ public class MessagingEndpoint {
         }
         Sender sender = new Sender(API_KEY);
 
-        Message msg = new Message.Builder().addData("message", message).addData("topic",topic).addData("extra",extra).build();
-        EntityManager entityManager= EMFUser.get().createEntityManager();
+        RegistrationRecord record = notificationPackage.getRegistrationRecord();
+        HashMap<String,String> extras = notificationPackage.getExtras();
+        Message.Builder builder =new Message.Builder().setData(extras);
+
+        Message msg = builder.addData("message", message).addData("topic",topic).build();
+
+        EntityManager entityManager;
+        entityManager = NucleusJPAHelper.getEntityManager(record);
+        boolean flag=entityManager==null;
+        boolean flag2=true;
+        if (flag)
+            entityManager= EMFUser.get().createEntityManager();
 
         try {
 
@@ -80,9 +97,13 @@ public class MessagingEndpoint {
                     log.info("Registration Id changed for " + record.getToken() + " updating to " + canonicalRegId);
                     record.setToken(canonicalRegId);
                     //Here save object record
-                    entityManager.getTransaction().begin();
+                    flag2=entityManager.getTransaction().isActive();
+
+                    if(!flag2)
+                        entityManager.getTransaction().begin();
                     entityManager.persist(record);
-                    entityManager.getTransaction().commit();
+                    if (!flag2)
+                        entityManager.getTransaction().commit();
                 }
             } else {
                 String error = result.getErrorCodeName();
@@ -90,16 +111,25 @@ public class MessagingEndpoint {
                     log.warning("Registration Id " + record.getToken() + " no longer registered with GCM, removing from datastore");
                     // if the device is no longer registered with Gcm, remove it from the datastore
                     //Here delete object record
-                    entityManager.getTransaction().begin();
+
+                    flag2 = entityManager.getTransaction().isActive();
+
+                    if(!flag2)
+                        entityManager.getTransaction().begin();
                     entityManager.remove(record);
-                    entityManager.getTransaction().commit();
+                    if (!flag2)
+                        entityManager.getTransaction().commit();
                 } else {
                     log.warning("Error when sending message : " + error);
                 }
             }
 
         }finally {
-            entityManager.close();
+            if(!flag2)
+                if(entityManager.getTransaction().isActive())
+                    entityManager.getTransaction().rollback();
+            if (flag)
+                entityManager.close();
         }
 
     }

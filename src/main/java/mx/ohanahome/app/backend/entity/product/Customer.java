@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
 import mx.ohanahome.app.backend.entity.user.User;
 
 /**
- * Created by brenda on 5/1/16.
+ * Created by brenda on 5/1/16
  */
 @Table(name = "TOH_CUSTOMER")
 @Entity
@@ -43,7 +43,7 @@ public class Customer {
             inverseJoinColumns=@JoinColumn(name="id_order"))
     private Set<CustomerOrder> orders;
 
-
+/*
     @OneToMany(mappedBy=" customer_product")
     private Set<OrderProduct> orderProducts ;
 

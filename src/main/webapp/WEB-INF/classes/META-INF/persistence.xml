@@ -62,6 +62,7 @@
             <property name="javax.persistence.jdbc.user" value="test_gae"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:google:mysql://moh-333:test2/PRODUCT_DB"/>
             <property name="javax.persistence.jdbc.password" value="gae_psw"/>
+
         </properties>
     </persistence-unit>
 </persistence>

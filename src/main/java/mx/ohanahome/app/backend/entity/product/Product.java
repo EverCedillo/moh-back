@@ -1,16 +1,22 @@
 package mx.ohanahome.app.backend.entity.product;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -24,7 +30,8 @@ import javax.persistence.Table;
 )
 @Table(name = "TOH_PRODUCT")
 @Entity
-public class Product {
+public class
+        Product {
     @GeneratedValue(generator = "increment")
     @Id
     @Column(name = "id_product")
@@ -34,10 +41,13 @@ public class Product {
     private Set<Store> stores;
 */
     @OneToMany(mappedBy="product")
-    private Set<ProductPrice> product_prices ;
+    private SortedSet<ProductPrice> product_prices ;
 
-    //@ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
-    //private Set<Order>orders;*/
+
+    /*@ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
+    @ManyToOne(fetch= FetchType.EAGER)
+    @JoinColumn(name="id_order")
+    private Order order;*/
 
     String product_name;
 
@@ -168,8 +178,25 @@ public class Product {
         return stores;
     }
 */
-    public Set<ProductPrice> getProduct_prices() {
+    public SortedSet<ProductPrice> getProduct_prices() {
         return product_prices;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id_product=" + id_product +
+                ", product_name='" + product_name + '\'' +
+                ", order_quantity=" + order_quantity +
+                ", category=" + category +
+                ", sub_category=" + sub_category +
+                ", depto=" + depto +
+                ", amount=" + amount +
+                ", unit='" + unit + '\'' +
+                ", brand='" + brand + '\'' +
+                ", product_no=" + product_no +
+                ", image='" + image + '\'' +
+                '}';
     }
 }
 

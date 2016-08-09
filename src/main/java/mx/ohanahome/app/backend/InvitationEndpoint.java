@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -41,6 +42,7 @@ import mx.ohanahome.app.backend.entity.user.Role;
 import mx.ohanahome.app.backend.entity.user.User;
 import mx.ohanahome.app.backend.entity.user.UserRole;
 import mx.ohanahome.app.backend.model.InvitationPackage;
+import mx.ohanahome.app.backend.model.NotificationPackage;
 import mx.ohanahome.app.backend.util.Constants;
 import mx.ohanahome.app.backend.util.EMFInvitation;
 import mx.ohanahome.app.backend.util.EMFUser;
@@ -159,17 +161,22 @@ public class InvitationEndpoint {
             String encode = builder.reverse().toString();
             if (user != null) {
                 if (user.getRecords() != null) {
+
                     Set<RegistrationRecord> records = user.getRecords();
+                    HashMap<String,String> extras = new HashMap<>();
+                    extras.put("extra",encode);
                     for (RegistrationRecord r : records) {
+                        NotificationPackage notificationPackage = new NotificationPackage();
+                        notificationPackage.setExtras(extras);
+                        notificationPackage.setRegistrationRecord(r);
                         Formatter f = new Formatter();
                         try {
                             new MessagingEndpoint().sendMessage(
                                     f.format(
                                             Constants.CInvitation.INVITATION_MSSG,
                                             invitationPackage.getInvitation().getSender_name()).toString(),
-                                    r,
-                                    Constants.CMessaging.INVITATION_TOPIC,
-                                    encode);
+                                    notificationPackage,
+                                    Constants.CMessaging.INVITATION_TOPIC);
                         } catch (IOException e) {
                             e.printStackTrace();
                             transaction.setRollbackOnly();
@@ -204,6 +211,11 @@ public class InvitationEndpoint {
 
             transaction.commit();
         }finally {
+            if(manager.getTransaction().isActive())
+                manager.getTransaction().rollback();
+            if(manager1.getTransaction().isActive())
+                manager1.getTransaction().rollback();
+
             manager.close();
             manager1.close();
         }
@@ -294,6 +306,7 @@ public class InvitationEndpoint {
             userRole.setUser(user);
             userRole.setRole(role);
 
+            Set<UserRole> users = home.getUserRoles();
             home.addUserRole(userRole);
 
 
@@ -307,22 +320,35 @@ public class InvitationEndpoint {
                 transaction.setRollbackOnly();
             }
 
+            userManager.persist(home);
+
+            user.addHome(home);
+            userManager.persist(user);
+
+
 
             Formatter f = new Formatter();
-            Set<UserRole> users = home.getUserRoles();
+
             for (UserRole ur : users) {
-                Set<RegistrationRecord> records = ur.getUser().getRecords();
+                Set<RegistrationRecord> records = new HashSet<>();
+                if(ur.getUser().getId_user()!=user.getId_user())
+                    records = ur.getUser().getRecords();
+                HashMap<String,String> extras = new HashMap<>();
+                extras.put("extra",String.valueOf(invitation.getHome().getId_home()));
+
                 for (RegistrationRecord r : records)
                     try {
+                        NotificationPackage notificationPackage = new NotificationPackage();
+                        notificationPackage.setExtras(extras);
+                        notificationPackage.setRegistrationRecord(r);
                         if (r != null)
                             new MessagingEndpoint().sendMessage(f.format(
                                             Constants.CInvitation.JOIN_HOME_MSSG, user.getUser_name()).toString(),
-                                    r,
-                                    Constants.CMessaging.JOIN_HOME_TOPIC,
-                                    String.valueOf(invitation.getHome().getId_home()));
+                                    notificationPackage,
+                                    Constants.CMessaging.JOIN_HOME_TOPIC);
                     } catch (IOException e) {
                         e.printStackTrace();
-                        transaction.setRollbackOnly();
+                        //transaction.setRollbackOnly();
 
                     }
             }

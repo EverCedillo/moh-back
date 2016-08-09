@@ -10,7 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -18,9 +21,12 @@ import javax.persistence.TemporalType;
 import mx.ohanahome.app.backend.entity.user.*;
 
 /**
- * Created by brenda on 5/1/16.
+ * Created by brenda on 5/1/16
  */
 
+@NamedQueries(
+        @NamedQuery(name = "OrderProduct.getProductsByCustomerAndOrder", query = "select op from OrderProduct where id_customer = :id_customer and id_order = :id_order")
+)
 @Table(name = "TOH_ORDER_PRODUCT")
 @Entity
 public class OrderProduct {
@@ -30,27 +36,17 @@ public class OrderProduct {
     private long id_order_product;
 
 
-    private long id_product;
+    @OneToOne
+    @JoinColumn(name = "id_product")
+    Product product;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_order")
-    private Order order;
-
-
-    @Temporal(TemporalType.TIMESTAMP)
-    Date creation_date;
+    private long id_customer;
+    private long id_order;
 
 
-    @OneToMany(mappedBy="shipment_order", fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy="orderProduct", fetch = FetchType.EAGER)
     private Set<Shipment> shipments;
-
-
-    @ManyToOne(fetch= FetchType.EAGER)
-    @JoinColumn(name="id_customer")
-    private Customer customer_product;
-
-    @OneToMany(mappedBy="orderProduct")
-    private Set<Shipment> shippments ;
 
 
     Integer quantity;
@@ -70,21 +66,6 @@ public class OrderProduct {
 
 
 
-    public long getId_product() {
-        return id_product;
-    }
-
-    public void setId_product(long id_product) {
-        this.id_product = id_product;
-    }
-
-    public Date getCreation_date() {
-        return creation_date;
-    }
-
-    public void setCreation_date(Date creation_date) {
-        this.creation_date = creation_date;
-    }
 
     public Integer getQuantity() {
         return quantity;
@@ -102,11 +83,29 @@ public class OrderProduct {
         this.price = price;
     }
 
-    public Customer getCustomer_product() {
-        return customer_product;
+    public long getId_customer() {
+        return id_customer;
     }
 
-    public void setCustomer_product(Customer customer_product) {
-        this.customer_product = customer_product;
+    public void setId_customer(long id_customer) {
+        this.id_customer = id_customer;
     }
+
+    public long getId_order() {
+        return id_order;
+    }
+
+    public void setId_order(long id_order) {
+        this.id_order = id_order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public OrderProduct(){}
 }
