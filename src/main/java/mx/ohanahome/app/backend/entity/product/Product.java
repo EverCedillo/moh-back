@@ -25,7 +25,7 @@ import javax.persistence.Table;
 
 @NamedQueries({
         @NamedQuery(name = "Product.getProducts", query = "select p from Product p"),
-        @NamedQuery(name = "Product.getProductsMap", query = "select new mx.ohanahome.app.backend.entity.product.Product(p.id_product, p.product_name) from Product p")
+        @NamedQuery(name = "Product.getProductsMap", query = "select new mx.ohanahome.app.backend.entity.product.Product(p.id_product, p.product_name, p.upc) from Product p")
 }
 )
 @Table(name = "TOH_PRODUCT")
@@ -40,7 +40,7 @@ public class
     /*@ManyToMany(mappedBy= "products",fetch = FetchType.EAGER)
     private Set<Store> stores;
 */
-    @OneToMany(mappedBy="product")
+    @OneToMany(mappedBy="product", fetch = FetchType.EAGER)
     private SortedSet<ProductPrice> product_prices ;
 
 
@@ -61,6 +61,11 @@ public class
     Integer product_no;
     String image;
 
+    String upc;
+    String description;
+
+
+
 
     public Product(String product_name,Integer order_quantity,  Integer category, Integer sub_category,
                    Integer depto, Integer amount,String  unit, String brand, Integer product_no, String image){
@@ -78,9 +83,10 @@ public class
         this.image = image;
     }
 
-    public Product(long id_product, String product_name) {
+    public Product(long id_product, String product_name, String upc) {
         this.id_product = id_product;
         this.product_name = product_name;
+        this.upc = upc;
     }
 
     public long getId_product() {
@@ -173,14 +179,32 @@ public class
         this.image = image;
     }
 
-    /*
-    public Set<Store> getStores() {
-        return stores;
+    public String getUpc() {
+        return upc;
     }
-*/
+
+    public void setUpc(String upc) {
+        this.upc = upc;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /*
+        public Set<Store> getStores() {
+            return stores;
+        }
+    */
     public SortedSet<ProductPrice> getProduct_prices() {
         return product_prices;
     }
+
+
 
     @Override
     public String toString() {

@@ -1,8 +1,10 @@
 package mx.ohanahome.app.backend;
 
+
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+
 
 
 import java.util.Date;
@@ -17,18 +19,23 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
+import mx.ohanahome.app.backend.entity.product.Stock;
 import mx.ohanahome.app.backend.entity.user.Home;
 import mx.ohanahome.app.backend.entity.user.Identify;
 import mx.ohanahome.app.backend.entity.user.Permission;
 import mx.ohanahome.app.backend.entity.user.Role;
+
+import mx.ohanahome.app.backend.entity.user.Scales;
 import mx.ohanahome.app.backend.entity.user.User;
 import mx.ohanahome.app.backend.entity.user.UserRole;
 import mx.ohanahome.app.backend.model.HomePackage;
+
 import mx.ohanahome.app.backend.util.Constants;
 import mx.ohanahome.app.backend.util.EMFInvitation;
 import mx.ohanahome.app.backend.util.EMFProduct;
 import mx.ohanahome.app.backend.util.EMFUser;
 import mx.ohanahome.app.backend.util.MOHException;
+import mx.ohanahome.app.backend.util.MyAuth;
 
 /**
  * An endpoint class we are exposing
@@ -119,6 +126,7 @@ public class HomeEndpoint {
         EntityManager invitationManager = EMFInvitation.get().createEntityManager();
         EntityManager productManager = EMFProduct.get().createEntityManager();
 
+        logger.log(Level.INFO,"insert home");
 
         try {
 
@@ -174,6 +182,7 @@ public class HomeEndpoint {
             user.addHome(home);
             manager.persist(user);
 
+
             manager.flush();
             EntityTransaction transaction1 = invitationManager.getTransaction();
             EntityTransaction transaction2 = productManager.getTransaction();
@@ -183,9 +192,14 @@ public class HomeEndpoint {
                 invitationManager.persist(home1);
 
                 try {
+                    // TODO: 9/08/16 add the customer relationship 
                     transaction2.begin();
                     mx.ohanahome.app.backend.entity.product.Home home2 = new mx.ohanahome.app.backend.entity.product.Home(home);
                     productManager.persist(home2);
+                    Stock stock = new Stock();
+                    stock.setId_stock(home2.getId_home());
+                    stock.setHome(home2);
+                    productManager.persist(stock);
                     transaction2.commit();
                 }catch (Exception e){
                     logger.log(Level.WARNING,"2:"+e.getMessage(),e.getCause());
@@ -234,6 +248,10 @@ public class HomeEndpoint {
         EntityManager invitationManager = EMFInvitation.get().createEntityManager();
         EntityManager productManager = EMFProduct.get().createEntityManager();
 
+
+        EntityTransaction transaction = manager.getTransaction();
+        EntityTransaction transaction1 = invitationManager.getTransaction();
+        EntityTransaction transaction2 = productManager.getTransaction();
         try {
             Identify identify = homePackage.getIdentify();
 
@@ -254,24 +272,27 @@ public class HomeEndpoint {
             if (home == null)
                 throw new MOHException(Status.HOME_NOT_FOUND.getMessage(), MOHException.STATUS_OBJECT_NOT_FOUND);
 
-            EntityTransaction transaction = manager.getTransaction();
+
             transaction.begin();
             home.mergeValues(homePackage.getHome());
             home.setModification_date(new Date());
 
             manager.persist(home);
 
-            EntityTransaction transaction1 = invitationManager.getTransaction();
-            EntityTransaction transaction2 = productManager.getTransaction();
+
             manager.flush();
             try {
                 transaction1.begin();
-                mx.ohanahome.app.backend.entity.invitation.Home home1 = new mx.ohanahome.app.backend.entity.invitation.Home(home);
+                mx.ohanahome.app.backend.entity.invitation.Home home1;
+                home1=invitationManager.find(mx.ohanahome.app.backend.entity.invitation.Home.class,homePackage.getHome().getId_home());
+                home1.mergeValues(new mx.ohanahome.app.backend.entity.invitation.Home(homePackage.getHome()));
                 invitationManager.persist(home1);
 
                 try {
                     transaction2.begin();
-                    mx.ohanahome.app.backend.entity.product.Home home2 = new mx.ohanahome.app.backend.entity.product.Home(home);
+                    mx.ohanahome.app.backend.entity.product.Home home2;
+                    home2=productManager.find(mx.ohanahome.app.backend.entity.product.Home.class, homePackage.getHome().getId_home());
+                    home2.mergeValues(new mx.ohanahome.app.backend.entity.product.Home(homePackage.getHome()));
                     productManager.persist(home2);
                     transaction2.commit();
                 }catch (Exception e){
@@ -295,6 +316,12 @@ public class HomeEndpoint {
 
             transaction.commit();
         }finally {
+            if(transaction.isActive())
+                transaction.rollback();
+            if(transaction1.isActive())
+                transaction1.rollback();
+            if(transaction2.isActive())
+                transaction2.rollback();
             manager.close();
             invitationManager.close();
             productManager.close();
@@ -302,6 +329,67 @@ public class HomeEndpoint {
 
         return home;
 
+    }
+
+
+    @ApiMethod(path = "home/scales")
+    public void insertScales(HomePackage homePackage) throws MOHException{
+        EntityManager userManager = EMFUser.get().createEntityManager();
+        Status status;
+        Identify identify =homePackage.getIdentify();
+        try {
+            status = verifyIdentity(identify,userManager);
+            if(status!=Status.OK) throw new MOHException(status.getMessage(),status.getCode());
+
+
+            userManager.getTransaction().begin();
+            Home home = homePackage.getHome();
+            UserRole ur = homePackage.getGuest();
+            User guest = ur.getUser();
+
+            home = userManager.find(Home.class,home.getId_home());
+
+            Scales scales = homePackage.getScales();
+            scales.setCreation_date(new Date());
+            scales.setModification_date(new Date());
+
+            scales.setHome_scales(home);
+            home.addScales(homePackage.getScales());
+
+            userManager.persist(home);
+            userManager.getTransaction().commit();
+
+
+
+        }finally {
+            userManager.close();
+        }
+    }
+
+    @ApiMethod(path = "home/userRole", httpMethod = ApiMethod.HttpMethod.POST)
+    public UserRole getUserRole(HomePackage homePackage) throws MOHException{
+        EntityManager userManager = EMFUser.get().createEntityManager();
+        Status status;
+        Identify identify =homePackage.getIdentify();
+        try {
+            status = verifyIdentity(identify,userManager);
+            if(status!=Status.OK) throw new MOHException(status.getMessage(),status.getCode());
+
+
+            Home home = homePackage.getHome();
+            UserRole ur = homePackage.getGuest();
+            User guest = ur.getUser();
+
+            TypedQuery<UserRole> query = userManager.createNamedQuery("UserRole.getURByUserAndHome",UserRole.class);
+
+            query.setParameter("user",guest.getId_user());
+            query.setParameter("home",home.getId_home());
+
+            return query.getResultList().get(0);
+
+        }finally {
+            userManager.close();
+        }
     }
 
     /**

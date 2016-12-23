@@ -73,7 +73,7 @@ public class InvitationEndpoint {
      */
     @ApiMethod(name = "getInvitation")
     public Invitation getInvitation(@Named("id") Long id) {
-        // TODO: Implement this function
+
         logger.info("Calling getInvitation method");
         return null;
     }
@@ -165,6 +165,7 @@ public class InvitationEndpoint {
                     Set<RegistrationRecord> records = user.getRecords();
                     HashMap<String,String> extras = new HashMap<>();
                     extras.put("extra",encode);
+
                     for (RegistrationRecord r : records) {
                         NotificationPackage notificationPackage = new NotificationPackage();
                         notificationPackage.setExtras(extras);
@@ -184,7 +185,7 @@ public class InvitationEndpoint {
                     }
 
                 }
-            }else throw new MOHException("HOli", 1);
+            }//else throw new MOHException("HOli", 1);
 
             String content = Constants.CInvitation.INVITATION_MAIL;
             String link = Constants.CInvitation.INVITATION_LINK;
@@ -334,8 +335,13 @@ public class InvitationEndpoint {
                 if(ur.getUser().getId_user()!=user.getId_user())
                     records = ur.getUser().getRecords();
                 HashMap<String,String> extras = new HashMap<>();
-                extras.put("extra",String.valueOf(invitation.getHome().getId_home()));
 
+                extras.put("extra",String.valueOf(invitation.getHome().getId_home()));
+                extras.put(Constants.CUser.USER_NAME,user.getUser_name());
+                extras.put(Constants.CUser.PICTURE,user.getPicture());
+                extras.put(Constants.CUser.ID_USER,String.valueOf(user.getId_user()));
+                extras.put(Constants.CRole.ROLE_NAME,role.getRole_name());
+                extras.put(Constants.CHome.HOME_ID,String.valueOf(home.getId_home()));
                 for (RegistrationRecord r : records)
                     try {
                         NotificationPackage notificationPackage = new NotificationPackage();

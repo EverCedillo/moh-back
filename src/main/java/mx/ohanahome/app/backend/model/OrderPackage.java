@@ -6,6 +6,7 @@ import mx.ohanahome.app.backend.entity.product.Customer;
 import mx.ohanahome.app.backend.entity.product.CustomerOrder;
 import mx.ohanahome.app.backend.entity.product.Order;
 import mx.ohanahome.app.backend.entity.product.OrderProduct;
+import mx.ohanahome.app.backend.entity.product.OrderStatus;
 import mx.ohanahome.app.backend.entity.user.Identify;
 
 /**
@@ -16,8 +17,11 @@ public class OrderPackage {
     Order order;
     OrderProduct orderProduct;
     List<Customer> customerList;
+    List<OrderProduct> productList;
+    List<Order> orderList;
     Customer owner;
     CustomerOrder guest;
+    OrderStatus orderStatus;
 
     public Customer getOwner() {
         return owner;
@@ -65,5 +69,29 @@ public class OrderPackage {
 
     public void setGuest(CustomerOrder guest) {
         this.guest = guest;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public List<OrderProduct> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<OrderProduct> productList) {
+        this.productList = productList;
+    }
+
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
     }
 }

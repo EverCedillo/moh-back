@@ -62,7 +62,7 @@ public class InfoEndpoint {
      */
     @ApiMethod(name = "insertIntolerance")
     public Intolerance insertIntolerance(Intolerance intolerance) {
-        // TODO: Implement this function
+
         logger.info("Calling insertIntolerance method");
         return intolerance;
     }
@@ -120,13 +120,16 @@ public class InfoEndpoint {
 
             userManager.getTransaction().begin();
 
+
             User user = identify.getUser();
             if (infoPackage.getIllness() != null) {
                 Illness illness = userManager.find(Illness.class, infoPackage.getIllness().getId_illness());
+                logger.warning(infoPackage.getIllness().getId_illness()+"");
                 user.addIllness(illness);
             }
             if (infoPackage.getIntolerance() != null) {
                 Intolerance intolerance = userManager.find(Intolerance.class, infoPackage.getIntolerance().getId_intolerance());
+                logger.warning(infoPackage.getIntolerance().getId_intolerance()+"");
                 user.addIntolerance(intolerance);
             }
 

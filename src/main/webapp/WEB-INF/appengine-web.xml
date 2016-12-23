@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <application>moh-333</application>
-    <version>1</version>
+    <version>2</version>
     <threadsafe>true</threadsafe>
 
     <system-properties>
@@ -9,4 +9,11 @@
         <property name="gcm.api.key" value="AIzaSyDU3JZLEBuNzEGGMIZInPhB-wfSMN6cXXM"/>
     </system-properties>
     <use-google-connector-j>true</use-google-connector-j>
+
+    <!--instance-class>B1</instance-class>
+    <basic-scaling>
+        <max-instances>8</max-instances>
+    </basic-scaling-->
+
+    <warmup-requests-enabled>true</warmup-requests-enabled>
 </appengine-web-app>

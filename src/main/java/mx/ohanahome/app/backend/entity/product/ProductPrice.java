@@ -18,7 +18,7 @@ import mx.ohanahome.app.backend.entity.user.Home;
  */
 @Table(name = "TOH_PRODUCT_PRICE")
 @Entity
-public class ProductPrice {
+public class ProductPrice implements Comparable{
     @Id
     private long id_product_price;
 
@@ -76,4 +76,16 @@ public class ProductPrice {
     }
 
 
+    @Override
+    public int compareTo(Object o) {
+        ProductPrice p;
+        if(!( o instanceof ProductPrice))
+            return 0;
+        p=(ProductPrice)o;
+        if(p.getId_product_price()==this.getId_product_price())
+            return 0;
+        if(p.getId_product_price()>this.getId_product_price())
+            return 1;
+        return -1;
+    }
 }

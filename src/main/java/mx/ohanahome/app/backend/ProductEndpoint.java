@@ -43,7 +43,7 @@ public class ProductEndpoint {
      */
     @ApiMethod(name = "listProducts")
     public CollectionResponse<Product> listProduct(Identify identify) {
-        // TODO: Implement this function
+
         logger.info("Calling getProduct method");
 
 
@@ -66,7 +66,7 @@ public class ProductEndpoint {
      */
     @ApiMethod(name = "insertProduct")
     public Product insertProduct(Product product) {
-        // TODO: Implement this function
+
         logger.info("Calling insertProduct method");
         return product;
     }

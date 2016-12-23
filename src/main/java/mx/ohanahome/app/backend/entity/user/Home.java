@@ -16,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -25,10 +27,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Created by brenda on 4/3/16.
+ * Created by brenda on 4/3/16
  */
-@NamedQueries(
-        @NamedQuery(name="Home.findHomesByUser",query = "Select h from Home h where")
+@NamedQueries({
+        @NamedQuery(name = "Home.findHomesByUser", query = "Select h from Home h where")})
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "Home.getUsersTokens", query = "select rr.* from TOH_REGISTRATION_DEVICE rr join TOH_USER u on u.id_user=rr.id_user join TOH_USER_HOME uh on u.id_user=uh.id_user join TOH_HOME h on h.id_home where h.id_home = ?",resultClass = RRegRecord.class)
+}
 )
 @Table(name = "TOH_HOME")
 @Entity
@@ -38,7 +43,7 @@ public class Home {
     @Column(name = "id_home")
     private long id_home;
 
-    @OneToMany(mappedBy="home_scales")
+    @OneToMany(mappedBy="home_scales", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Scales> scales;
 
     @OneToMany(mappedBy="home",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -263,6 +268,12 @@ public class Home {
         if(userRoles==null) userRoles= new HashSet<>();
         userRoles.add(userRole);
     }
+
+    public void addScales(Scales scales){
+        if(this.scales==null) this.scales= new HashSet<>();
+        this.scales.add(scales);
+    }
+
 
 
     public Home(){}

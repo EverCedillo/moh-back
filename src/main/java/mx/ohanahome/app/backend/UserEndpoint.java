@@ -201,7 +201,10 @@ public class UserEndpoint {
 
             manager.flush();
 
-            user.setPicture(String.format(Constants.CUser.DEFAULT_PICTURE_PATH, String.valueOf(user.getId_user())));
+            if(loginPackage.isDefaultPicture())
+                user.setPicture(Constants.CUser.DEFAULT_PICTURE_PATH);
+            else
+                user.setPicture(String.format(Constants.CUser.PICTURE_PATH, String.valueOf(user.getId_user())));
             manager.persist(user);
 
             try{
@@ -238,6 +241,7 @@ public class UserEndpoint {
 
         EntityManager manager = EMFUser.get().createEntityManager();
         try {
+            logger.log(Level.WARNING,loginPackage.getIdentify().getAdapter() + " ---" + loginPackage.getIdentify().getId_adapter());
 
             Status status = verifyIdentity(identify, manager);
             if (status != Status.USER_ALREADY_EXISTS) return null;
@@ -255,7 +259,7 @@ public class UserEndpoint {
     }
 
 
-    @ApiMethod(path = "me/home", httpMethod = ApiMethod.HttpMethod.POST)
+    @ApiMethod(path = "user/home", httpMethod = ApiMethod.HttpMethod.POST)
     public CollectionResponse<Home> getIdHomes(LoginPackage loginPackage) throws MOHException{
         EntityManager userManager = EMFUser.get().createEntityManager();
         Status status;
@@ -288,7 +292,7 @@ public class UserEndpoint {
         else return Status.OK;
     }
 
-    @ApiMethod(path = "me/purchaseLimit")
+    @ApiMethod(path = "user/purchaseLimit")
     public void putPurchaseLimit(BudgetPackage budgetPackage) throws MOHException{
         Status status;
         EntityManager userManager = EMFUser.get().createEntityManager();
@@ -307,7 +311,7 @@ public class UserEndpoint {
         }
     }
 
-    @ApiMethod(path = "me/purchaseLimit")
+    @ApiMethod(path = "user/purchaseLimit")
     public CollectionResponse<PurchaseLimit> listPurchases(BudgetPackage budgetPackage) throws MOHException{
         Status status;
         EntityManager userManager = EMFUser.get().createEntityManager();

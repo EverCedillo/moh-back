@@ -27,7 +27,8 @@ import mx.ohanahome.app.backend.entity.user.*;
 
 @NamedQueries(
         {@NamedQuery(name = "CustomerOrder.getCOByOrderAndCustomer", query = "select co from CustomerOrder co where co.order.id_order = ?1 and co.id_customer = ?2"),
-        @NamedQuery(name = "CustomerOrder.getCustomerOrderByOrder", query = "select co from CustomerOrder co where co.order.id_order = ?1")}
+        @NamedQuery(name = "CustomerOrder.getCustomerOrderByOrder", query = "select co from CustomerOrder co where co.order.id_order = ?1"),
+        }
 )
 @Table(name = "TOH_CUSTOMER_ORDER")
 @Entity
@@ -95,4 +96,17 @@ public class CustomerOrder {
         this.id_customer = id_customer;
     }
     public CustomerOrder(){}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CustomerOrder)) return false;
+
+        CustomerOrder that = (CustomerOrder) o;
+
+        return id_customer_order == that.id_customer_order;
+
+    }
+
+
 }

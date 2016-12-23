@@ -80,7 +80,7 @@ public class User{
     @JoinTable(
             name="TOH_USER_ILLNESS",
             joinColumns=@JoinColumn(name="id_user"),
-            inverseJoinColumns=@JoinColumn(name="id_user_illness"))
+            inverseJoinColumns=@JoinColumn(name="id_illness"))
     private Set<Illness> illnesses;
 
 

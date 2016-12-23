@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Date;
+import java.util.SortedSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,6 +32,11 @@ import javax.persistence.TemporalType;
 /**
  * Created by brenda on 5/1/16
  */
+@NamedQueries(
+        {
+                @NamedQuery(name = "Order.getOrdersByHome", query = "select o from Order o where o.id_home = :id_home")
+        }
+)
 @Table(name = "TOH_ORDER")
 @Entity
 public class Order {

@@ -28,9 +28,12 @@ public class Constants {
 
         public static final String EMAIL = "email";
 
-        public static final String ID_USER = "user";
+        public static final String ID_USER = "id_user";
+        public static final String USER_NAME = "user_name";
+        public static final String PICTURE = "picture";
 
-        public static final String DEFAULT_PICTURE_PATH = "http://www.ohanahome.mx/profile/images/%1$s.png";
+        public static final String PICTURE_PATH = "http://www.ohanahome.mx/profile/images/%1$s.png";
+        public static final String DEFAULT_PICTURE_PATH = "http://www.ohanahome.mx/profile/images/default.png";
     }
     public static class CIdentity{
         //columns names
@@ -42,6 +45,12 @@ public class Constants {
         public static final String ADMIN_ROLE = "Administrador";
         public static final String NORMAL_ROLE = "Normal";
 
+        public static final String ROLE_NAME = "role_name";
+
+    }
+
+    public static class CHome{
+        public static final String HOME_ID = "id_home";
     }
     public static class CInvitation {
         public static final String PENDING_INVITATION = "Pendiente";
@@ -68,8 +77,13 @@ public class Constants {
         public static final String ORDER_INVITATION_TOPIC = "order_invite";
         public static final String ORDER_PUSH_PRODUCT_TOPIC = "push_product";
         public static final String ORDER_PUSH_CUSTOMER_TOPIC = "push_customer";
+        public static final String ORDER_PUSH_STATUS_TOPIC = "push_order_status";
+
+        public static final String STOCK_ITEM_PUSH_TOPIC = "push_stock_item";
 
         public static final String TOTAL_DESTRUCTION = "total_destruction";
+
+        public static final String DEFAULT_MESSAGE = "This message is useless";
 
     }
 
@@ -103,7 +117,10 @@ public class Constants {
     }
 
     public static class COrder{
-        public static final String ORDER_INVITATION_MSG = "%1$s te ha invitado a una compra";
+        public static final String ORDER_INVITATION_MSG = "%1$s te ha invitado para compartir la compra '%2$s'";
+
+        public static final String ID_ORDER = "id_order";
+        public static final String ID_HOME = "id_home";
 
     }
 
@@ -122,6 +139,12 @@ public class Constants {
         public static final String CANCELED_ORDER ="Compra cancelada";
         public static final String COMPLETE_ORDER = "Compra finalizada";
         public static final String SENT_ORDER = "Compra enviada";
+
+        public static final String STATUS_NAME = "status_name";
+
+        public static final String FETCH_ORDER_PRODUCT_FLAG ="op_flag";
+
+        public static final String OP_COUNT = "op_count";
     }
 
     public static class COrderProduct{
@@ -131,6 +154,10 @@ public class Constants {
         public static final String ID_ORDER = "id_order";
         public static final String QUANTITY ="quantity";
         public static final String PRICE = "price";
+        public static final String PRODUCT_TYPE = "product_type";
+
+        public static final String GENERAL_TYPE = "General";
+        public static final String PERSONAL_TYPE = "Personal";
 
         public static final String ALL_COLUMNS [] = {ID_ORDER_PRODUCT,
         ID_PRODUCT,
@@ -153,4 +180,41 @@ public class Constants {
         public static final String PRODUCT_NO = "product_no";
         public static final String IMAGE = "image";
     }
+
+    public static class CStock{
+        public static final String ID_STOCK="id_stock";
+    }
+
+    public  static class CStockDetail{
+        public  static final String ID_STOCK_PRODUCT = "id_stock_product";
+
+        public static final String EXISTENT_ITEM = "Existente";
+        public static final String MISSING_ITEM = "Faltante";
+
+        public static final String MOVEMENT_STOCK = "movement_stock";
+
+        //String movement_stock;//    enum('Existente','Faltante','Salida')
+    }
+
+    public static class CStockProduct{
+        public static final String ID_STOCK_PRODUCT = "id_stock_product";
+        public static final String ID_CUSTOMER = "id_customer";
+        public static final String ID_STOCK = "id_stock";
+        public static final String ID_PRODUCT = "id_product";
+        public static final String STOCK_QUANTITY = "stock_quantity";
+        public static final String TYPE = "type";
+        public static final String PRODUCT_TYPE = "product_type";
+        public static final String ID_HOME = "id_home";
+
+        String type;
+
+        //num('Personal','General','Privado')
+        public static final String PERSONAL_TYPE = "Personal";
+        public static final String GENERAL_TYPE = "General";
+        public static final String PRIVATE_TYPE = "Privado";
+
+
+    }
+
 }
+

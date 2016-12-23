@@ -25,7 +25,9 @@ import mx.ohanahome.app.backend.entity.user.*;
  */
 
 @NamedQueries(
-        @NamedQuery(name = "OrderProduct.getProductsByCustomerAndOrder", query = "select op from OrderProduct where id_customer = :id_customer and id_order = :id_order")
+        {@NamedQuery(name = "OrderProduct.getProductsByCustomerAndOrder", query = "select op from OrderProduct op where id_customer = :id_customer and id_order = :id_order"),
+        @NamedQuery(name = "OrderProduct.removeOrderProduct", query = "delete from OrderProduct op where op.id_order_product = :id_order_product"),
+        @NamedQuery(name = "OrderProduct.removeOPByCustomerNOrder", query = "delete from OrderProduct op where op.id_customer =:id_customer and op.id_order = :id_order")}
 )
 @Table(name = "TOH_ORDER_PRODUCT")
 @Entity
@@ -51,6 +53,8 @@ public class OrderProduct {
 
     Integer quantity;
     double price;
+
+    String product_type;
     public OrderProduct (Integer quantity, double price){
         this.quantity = quantity;
         this.price = price;
@@ -105,6 +109,14 @@ public class OrderProduct {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getProduct_type() {
+        return product_type;
+    }
+
+    public void setProduct_type(String product_type) {
+        this.product_type = product_type;
     }
 
     public OrderProduct(){}

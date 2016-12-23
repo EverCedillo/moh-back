@@ -1,26 +1,22 @@
 package mx.ohanahome.app.backend.entity.user;
 
-;import com.google.appengine.repackaged.org.codehaus.jackson.annotate.JsonIgnore;
+import com.google.appengine.repackaged.org.codehaus.jackson.annotate.JsonIgnore;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-@NamedQueries(
-        @NamedQuery(name = "RegistrationRecord.getRecordsByUser" , query = "select rr from RegistrationRecord rr where rr.user.id_user = ?1")
-)
+/**
+ * Created by ever on 22/12/16.
+ */
+
 @Table(name = "TOH_REGISTRATION_DEVICE")
 @Entity
-public class RegistrationRecord {
+public class RRegRecord {
 
     @GeneratedValue(generator = "increment")
     @Id
@@ -28,9 +24,7 @@ public class RegistrationRecord {
 
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_user")
-    User user;
+    long id_user;
 
 
 
@@ -46,16 +40,17 @@ public class RegistrationRecord {
         this.id_token = id_token;
     }
 
-    @JsonIgnore
-    public User getUser() {
-        return user;
+    public long getId_user() {
+        return id_user;
     }
 
-    public RegistrationRecord(){}
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setId_user(long id_user) {
+        this.id_user = id_user;
     }
+
+    public RRegRecord(){}
+
+
 
     public String getToken() {
         return token;

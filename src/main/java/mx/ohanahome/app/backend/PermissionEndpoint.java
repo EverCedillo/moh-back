@@ -46,7 +46,7 @@ public class PermissionEndpoint {
      */
     @ApiMethod(name = "getPermission")
     public Permission getPermission(@Named("id") Long id) {
-        // TODO: Implement this function
+
         logger.info("Calling getPermission method");
         return null;
     }
@@ -59,7 +59,7 @@ public class PermissionEndpoint {
      */
     @ApiMethod(name = "grantPermission", httpMethod = ApiMethod.HttpMethod.POST)
     public Role grantPermission(PermissionPackage permissionPackage)throws MOHException{
-        // TODO: Implement this function
+
         Status status;
         status=validateFields(permissionPackage);
         Role role;

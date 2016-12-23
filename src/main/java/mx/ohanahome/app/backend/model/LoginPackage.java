@@ -11,6 +11,7 @@ import mx.ohanahome.app.backend.entity.user.User;
 public class LoginPackage {
     private User user;
     private Identify identify;
+    boolean defaultPicture;
 
     public LoginPackage(User user, String id_adapter, String adapter, String email_, Date creationDate, Date modificationDate){
         this.user = user;
@@ -38,5 +39,13 @@ public class LoginPackage {
 
     public void setIdentify(Identify identify) {
         this.identify = identify;
+    }
+
+    public boolean isDefaultPicture() {
+        return defaultPicture;
+    }
+
+    public void setDefaultPicture(boolean defaultPicture) {
+        this.defaultPicture = defaultPicture;
     }
 }
